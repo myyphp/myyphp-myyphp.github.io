@@ -115,7 +115,7 @@ body,code,pre{
 }
 
 body,.sheet,pre,code{
-    font-size: 17px;
+    font-size: 14px;
 }
 
 
@@ -198,6 +198,7 @@ a:active {text-decoration: none}	/* 选定的链接 */
 .word-keep{
     display: inline-block;
     word-break: keep-all;
+    font-size: 16px;
 }
 
 .rectangle{
