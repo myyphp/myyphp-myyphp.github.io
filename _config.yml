@@ -1,0 +1,43 @@
+permalink: /:year-:month-:day/:title/
+
+highlighter: pygments
+markdown: redcarpet
+redcarpet:
+  extensions: [
+   "no_intra_emphasis"
+   ,"fenced_code_blocks"
+   ,"autolink"
+   ,"tables"
+   ,"strikethrough"
+   ,"superscript"
+   ,"with_toc_data"
+   ,"footnotes"
+   ,"highlight"
+   ,"underline"
+   ,"quote"
+   ,"lax_spacing"
+   ,"prettify"
+#   ,"html_toc"
+  ]
+
+
+
+paginate: 10
+paginate_path: ":num"
+baseurl: ""
+
+
+
+title: "圣泉山人"
+email: "zuji666@gmail.com"
+description: "随记"
+github_username:  "myyphp"
+swiftype_searchId: "ncwR9a8S9CTx2q9SgsJm"
+disqus_shortname: "zuji"
+
+
+
+url: "http://myyphp.github.io"
+imgrepo: "http://myyphp.github.io/static/img"
+#url: "http://127.0.0.1:4000"
+#imgrepo: "http://127.0.0.1:4000/static/img"
