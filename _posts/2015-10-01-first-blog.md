@@ -30,45 +30,17 @@ dog's back.
 >
 > ## This is an H2 in a blockquote
 
-{% highlight php linenos %}
-	echo 'hello word'; 
-	foreach($arr as $v)
+
+
+{% highlight php startinline linenos %} 
+
+$dir = './';
+function myScandir($dir)
+{
+	if( !is_dir($dir) )
 	{
-		echo $v;
+		return false;
 	}
-{% endhighlight %}
-
-
-{% highlight php5 %} 
-	//php语法高亮显示
-{% endhighlight %}
-
-{% highlight php4 %} 
-	//php语法高亮显示
-{% endhighlight %}
-
-{% highlight c %}
-/* hello world demo */
-#include <stdio.h>
-int main(int argc, char **argv)
-{
-    printf("Hello, World!\n");
-    return 0;
-}
-{% endhighlight %}
-
-
-```php
-function test()
-{
-	echo 'test';
-}
-
-```
-
-{% highlight php startinline %} 
-function test()
-{
-	echo 'test';
+	$arr = scandir($dir);
 }
 {% endhighlight %}
