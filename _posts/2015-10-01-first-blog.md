@@ -65,3 +65,10 @@ function test()
 }
 
 ```
+
+{% highlight php startinline %} 
+function test()
+{
+	echo 'test';
+}
+{% endhighlight %}
