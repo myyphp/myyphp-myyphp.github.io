@@ -56,3 +56,12 @@ int main(int argc, char **argv)
     return 0;
 }
 {% endhighlight %}
+
+
+```php
+function test()
+{
+	echo 'test';
+}
+
+```
