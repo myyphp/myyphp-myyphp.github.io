@@ -30,7 +30,7 @@ dog's back.
 >
 > ## This is an H2 in a blockquote
 
-{% highlight php linenos %} 
+{% highlight c %} 
 	echo 'hello word'; 
 	foreach($arr as $v)
 	{
