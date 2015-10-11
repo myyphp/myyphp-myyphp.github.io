@@ -65,7 +65,7 @@ categories: 读书笔记
 	AddOutputFilterByType DEFLATE text/html  #压缩html文件 
 	AddOutputFilterByType DEFLATE text/xml   #压缩xml文件
 	</ifmodule>
-{% highlight php startinline linenos %} 
+{% endhighlight %}
 	
 > 压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。
 
