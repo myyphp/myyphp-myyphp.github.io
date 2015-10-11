@@ -1,52 +1,50 @@
 ---
 layout: post
 title: php文件上传
-category: 技术
-tags: php
-keywords: 
-description: 
+category: 读书笔记
+tags: 文件上传
 ---
 
 通过 PHP，可以把文件上传到`服务器`
 
 
 ###什么是文件上传
+
 把`浏览器`所在电脑的文件存放到`服务器`上, 这个过程称之为文件上传
 
 上传分为两个部分: 
 
+- 将浏览器所在电脑的文件选中,提交给服务器,服务器要接收文件.
 
-1. 将浏览器所在电脑的文件选中,提交给服务器,服务器要接收文件.
-
-2.	服务器必须要接收文件: apache不能接收文件,PHP负责接收.
+- 服务器必须要接收文件: apache不能接收文件,PHP负责接收.
 
 ###前期准备
-####`设置php.ini`
+- 设置php.ini
 
 - 确保上传功能被打开
 
-```
-file_uploads = On
-```
+
+    file_uploads = On
+
 
 - 设置上传文件的临时存放目录
 
-```
-upload_tmp_dir ="E:\PHP\upload"      #;设置文件上传临时保存路径,默认是在c:/windows/temp
-```
 
-####`设置文件表单域`
+    upload_tmp_dir ="E:\PHP\upload"  #;设置文件上传临时保存路径,默认是在c:/windows/temp
 
-```
-<input type=’file’ name=’myfile’>
-```
 
-####`设置post提交二进制`
-```
-enctype=”multipart/form-data”
-```
+- 设置文件表单域
+
+
+    <input type=’file’ name=’myfile’>
+
+
+- 设置post提交二进制
+
+	`enctype=”multipart/form-data”`
+
 ####`$_FILES获取的数据`
-{% highlight php linenos %}
+{% highlight php startinline linenos %} 
 array(1) {
   ["myfile"]=>
   array(5) {
@@ -72,7 +70,7 @@ array(1) {
 - `move_uploaded_file()`这个函数虽然`多次调用但是只能执行一次`，原因就在于`move_uploaded_file()`只支持post提交的信息，也就是用户只提交了一个post，第一次调用被执行后，之后就不是post的值也就是说不在执行了，解决办法就是`用copy代替move_uploaded_file()`
 
 ###封装一个上传文件函数
-{% highlight php linenos %}
+{% highlight php startinline linenos %} 
 	/*
 	 * 上传文件
 	 * @param1 array $file,要上传的文件信息
