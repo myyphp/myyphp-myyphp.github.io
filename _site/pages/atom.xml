@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>圣泉山人—随记</title>
+    <link></link>
+    <description>My personal blog</description>
+    
+      <item>
+        <title>http协议</title>
+        <link>/2015/10/02/http.html</link>
+        <guid isPermaLink="true">/2015/10/02/http.html</guid>
+        <pubDate>Fri, 02 Oct 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;http协议&lt;/h1&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;HTTP：HyperText Transfer Protocol ，超文本传输协议&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3&gt;HTTP协议的特点&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;支持c/s模式&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;简单快速：只需请求方法和路径&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;灵活：HTTP协议之间并没规定传输的数据的内容，可以是字符流也可以是二进制&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;无连接：每次连接只处理一个请求，当浏览器发起一次请求，服务器只能响应一次，一旦请求被服务器请求完毕，浏览器就会与服务器断开连接。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;事务处理没记忆能力，http协议的无连接：一次请求只能有一个响应，多次请求间服务器是不能识别浏览器的（健忘症）&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h3&gt;http协议由两部分组成：&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;http请求：浏览器向服务器发出请求的时候，应该遵循的协议&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;http相应：服务器向浏览器返回响应的时候，应该遵循的协议&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h4&gt;http请求&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;请求行&lt;/strong&gt;： 独占一行，请求方式（GET和POST URI）资源路径  协议版本（HTTP/1.1）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;请求头&lt;/strong&gt;： 每一个请求他占一行，每一个请求头就是一个具体的协议：  协议名：协议内容&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;空行&lt;/strong&gt;   :  告诉服务器，请求头已经结束，下面的内容是请求数据&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;请求数据&lt;/strong&gt;: POST形式提交数据的时候，才会的数据。  表单名字=值&amp;amp;表单名字=值。。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h4&gt;常见的请求头&lt;/h4&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Host：          服务器的主机地址，通常是主机名   比如： host：www.itcast.cn&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Accept-encoding：   接收的文件编码格式（不是字符集，gzip分类）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Referer：       当前请求是由上一次什么请求发展而来，记录的是上一次请求的url (可以用于防盗链)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Connection：        保存连接，在http/1.1协议之后，都是keep-alive，一次请求还没有被完全响应之间，不要断开连接&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Accept-language：   浏览器可以接收的语种（中文、英文）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Cookie：        是一种服务器将数据保存在浏览器上的技术：浏览器能够将本地的属于当前请求的服务器的cookie数据通过cookie协议进行携带&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;User-agent：        用户代理，代表当前浏览器的大部分信息&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Accept：        浏览器能够接收的数据格式（text/html/image/png等&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Content-length   （post：提交的数据的长度，只post才数据提交（GET数据是在URI上&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;If-modified-since    （get：浏览器会缓存之前请求过的数据，浏览器会在下次请求同样数据的时候，发送一个当前文件的缓存时间告诉服务器进行判断，服务器告诉浏览器是否需要重新请求&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Content-type     （post：post数据提交的时候才会存在：将数据进行格式转换（转码）&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h3&gt;http响应&lt;/h3&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;状态行        ： 独占一行。 协议版本（HTTP/1.1）     状态码（服务器对响应的一张编码）     状态描述（对状态码的解释）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;响应头        ： 与请求头一样,很多. 每个响应头占一行: 响应协议名字 : 值&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;空行       :  告诉服务器，请求头已经结束，下面的内容是响应数据&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;响应数据     :  服务器返回的所有数据&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;常见的响应头&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Server          : 服务器信息&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Date         : 响应时间&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;last-modified        : 最后修改时间与请求头中的if-modified-since对应&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;content-length   : 响应的数据的长度&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;content-type     : 数据的类型(text/html,image/png等)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Location     : 重定向: 告诉服务器立即重新发起请求,请求location给定的值: 浏览器不需要向下继续解析其他响应头(到此结束)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Refresh      :  重定向: 告诉服务器在指定时间之后再重新发起请求,请求refresh中的url对应的值: 浏览器应该继续向下解析&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;content-encodeing    : 与请求头的accept-encoding一致, 文件编码格式,gzip等&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;cache-control        : 缓存控制, 服务器的内容告诉浏览器要不要缓存: no-cache告诉浏览器不要缓存.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;状态码&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;服务器对于请求的处理情况的基本描述: 浏览器一旦读到对应的状态码就能分析出服务器的处理状态状态码总体分为5类&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;1XX: 服务器已经开始处理,但是还没处理完 &lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;2XX: 服务器已经正确处理&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;3XX: 重定向: 服务器需要浏览器重新请求&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;4XX: 请求错误: 浏览器发起的请求服务器不能正确解析&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;5XX: 服务器错误: 服务器内部出现了&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;常见的状态码&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;200: 请求成功(服务器已经正确处理）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;303: location: 应该重新发起请求&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;304: 告诉浏览器读取本地缓存,不需要重新请求&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;403: forbidden,没权限访问&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;404: not found,找不到目标文件&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;502: bad gateway: 服务器没从上游获取正确的结果&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>高并发</title>
+        <link>/2015/08/03/about-optimize.html</link>
+        <guid isPermaLink="true">/2015/08/03/about-optimize.html</guid>
+        <pubDate>Mon, 03 Aug 2015 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。&lt;/p&gt;
+
+&lt;h2&gt;防盗链怎么做？&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;非技术手段 ： 给图片添加水印logo&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;怎么应对网站高并发？&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;主要处理方式就是分流。&lt;/p&gt;
+
+&lt;p&gt;从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;服务器端采用缓存技术（速度 ：内存缓存&amp;gt;静态缓存&amp;gt;查询数据库）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;合理设计数据库，使用高效sql语句，合理建立索引等。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;大流量（访问网站的量）解决方案？&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;减少http请求（比如合并图片）&lt;/li&gt;
+&lt;li&gt;配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。&lt;/li&gt;
+&lt;li&gt;配置压缩，服务器端压缩，客户端解压&lt;/li&gt;
+&lt;li&gt;把比较占用流量的资源单独部署&lt;/li&gt;
+&lt;li&gt;防盗链&lt;/li&gt;
+&lt;li&gt;买带宽&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;大存储的解决方式？&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;缓存技术（页面静态化+内存缓存技术）&lt;/li&gt;
+&lt;li&gt;数据库方面的优化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;怎么配置MPM？？？&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;IfModule&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mpm_prefork_module&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;       &lt;span class=&quot;nx&quot;&gt;StartServers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;#预先启动&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;       &lt;span class=&quot;nx&quot;&gt;MinSpareServers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;       &lt;span class=&quot;nx&quot;&gt;MaxSpareServers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;#最大空闲进程&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;       &lt;span class=&quot;nx&quot;&gt;ServerLimit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1500&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;#用于修改apache编程参数&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;       &lt;span class=&quot;nx&quot;&gt;MaxClients&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;            &lt;span class=&quot;c1&quot;&gt;#最大并发数&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;7&lt;/span&gt;       &lt;span class=&quot;nx&quot;&gt;MaxRequestsPerChild&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;8&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;IfModule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;pv值如果百万级别：ServerLimit  2500       MaxClients 2000&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;怎么配置压缩，以减少传输的数据量？？？&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;要开启gzip压缩的mod&lt;em&gt;deflate模块： LoadModule deflate&lt;/em&gt;module modules/mod_deflate.so&lt;/li&gt;
+&lt;li&gt;在虚拟主机里面针对具体的文件类型进行配置。例如：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ifmodule&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mod_deflate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;   &lt;span class=&quot;nx&quot;&gt;DeflateCompressionLevel&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;#压缩级别为6，可1-9，推荐为6 &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;   &lt;span class=&quot;nx&quot;&gt;AddOutputFilterByType&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;DEFLATE&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;plain&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;#压缩文本文件 &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;   &lt;span class=&quot;nx&quot;&gt;AddOutputFilterByType&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;DEFLATE&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;html&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;#压缩html文件 &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;   &lt;span class=&quot;nx&quot;&gt;AddOutputFilterByType&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;DEFLATE&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xml&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;#压缩xml文件&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ifmodule&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Git常用命令速查表</title>
+        <link>/2015/01/30/Git-Resources.html</link>
+        <guid isPermaLink="true">/2015/01/30/Git-Resources.html</guid>
+        <pubDate>Fri, 30 Jan 2015 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;master: 默认开发分支&lt;/p&gt;
+
+&lt;p&gt;origin: 默认远程版本库&lt;/p&gt;
+
+&lt;p&gt;Head: 默认开发分支&lt;/p&gt;
+
+&lt;p&gt;Head^: Head的父提交&lt;/p&gt;
+
+&lt;h3&gt;创建版本库&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git clone &amp;lt;url&amp;gt;   #克隆远程版本库
+$ git init          #初始化本地版本库
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;修改和提交&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git status        #查看状态
+$ git diff          #查看变更内容
+$ git add .         #跟踪所有改动过的文件
+$ git add &amp;lt;file&amp;gt;    #跟踪指定的文件
+$ git mv &amp;lt;old&amp;gt;&amp;lt;new&amp;gt; #文件改名
+$ git rm&amp;lt;file&amp;gt;      #删除文件
+$ git rm --cached&amp;lt;file&amp;gt;            #停止跟踪文件但不删除
+$ git commit -m &amp;quot;commit messages&amp;quot;  #提交所有更新过的文件
+$ git commit --amend               #修改最后一次改动
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;查看提交历史&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git log                    #查看提交历史
+$ git log -p &amp;lt;file&amp;gt;          #查看指定文件的提交历史
+$ git blame &amp;lt;file&amp;gt;           #以列表方式查看指定文件的提交历史
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;撤销&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git reset --hard HEAD      #撤销工作目录中所有未提交文件的修改内容
+$ git checkout HEAD &amp;lt;file&amp;gt;   #撤销指定的未提交文件的修改内容
+$ git revert &amp;lt;commit&amp;gt;        #撤销指定的提交
+$ git log --before=&amp;quot;1 days&amp;quot;  #退回到之前1天的版本 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;分支与标签&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git branch                   #显示所有本地分支
+$ git checkout &amp;lt;branch/tag&amp;gt;    #切换到指定分支和标签
+$ git branch &amp;lt;new-branch&amp;gt;      #创建新分支
+$ git branch -d &amp;lt;branch&amp;gt;       #删除本地分支
+$ git tag                      #列出所有本地标签
+$ git tag &amp;lt;tagname&amp;gt;            #基于最新提交创建标签
+$ git tag -d &amp;lt;tagname&amp;gt;         #删除标签
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;合并与衍合&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git merge &amp;lt;branch&amp;gt;        #合并指定分支到当前分支
+$ git rebase &amp;lt;branch&amp;gt;       #衍合指定分支到当前分支
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;远程操作&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git remote -v                   #查看远程版本库信息
+$ git remote show &amp;lt;remote&amp;gt;        #查看指定远程版本库信息
+$ git remote add &amp;lt;remote&amp;gt; &amp;lt;url&amp;gt;   #添加远程版本库
+$ git fetch &amp;lt;remote&amp;gt;              #从远程库获取代码
+$ git pull &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;      #下载代码及快速合并
+$ git push &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;      #上传代码及快速合并
+$ git push &amp;lt;remote&amp;gt; :&amp;lt;branch/tag-name&amp;gt;  #删除远程分支或标签
+$ git push --tags                       #上传所有标签
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;资料链接&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://try.github.io/levels/1/challenges/1&quot;&gt;Try Git&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Linux 4：磁盘与文件系统管理</title>
+        <link>/2014/09/30/Linux4.html</link>
+        <guid isPermaLink="true">/2014/09/30/Linux4.html</guid>
+        <pubDate>Tue, 30 Sep 2014 00:00:00 +0800</pubDate>
+        <description>&lt;h3&gt;认识EXT2文件系统&lt;/h3&gt;
+
+&lt;p&gt;每种操作系统能够使用的文件系统并不相同。 举例来说，windows 98以前的微软操作系统主要利用的文件系统是&lt;code&gt;FAT(或FAT16)&lt;/code&gt;，windows 2000以后的版本有所谓的&lt;code&gt;NTFS&lt;/code&gt;文件系统，至于Linux的正统文件系统则为&lt;code&gt;Ext2&lt;/code&gt;(Linux second extended file system, ext2fs)这一个。此外，在默认的情况下，windows操作系统是不会认识Linux的Ext2的。&lt;/p&gt;
+
+&lt;p&gt;那么文件系统是如何运行的呢？这与操作系统的文件数据有关。较新的操作系统的文件数据除了文件实际内容外，通常含有非常多的属性，例如Linux操作系统的文件权限(rwx)与文件属性(拥有者、群组、时间参数等)。 文件系统通常会将这两部份的数据分别存放在不同的区块，权限与属性放置到&lt;code&gt;inode&lt;/code&gt;中，至于实际数据则放置到&lt;code&gt;data block&lt;/code&gt;区块中。 另外，还有一个超级区块(&lt;code&gt;superblock&lt;/code&gt;)会记录整个文件系统的整体信息，包括inode与block的总量、使用量、剩余量等。&lt;/p&gt;
+
+&lt;h3&gt;文件系统的简单操作&lt;/h3&gt;
+
+&lt;h3&gt;磁盘的分割、格式化、检验与挂载&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;磁盘分区： fdisk, partprobe&lt;/li&gt;
+&lt;li&gt;磁盘格式化： mkfs, mke2fs&lt;/li&gt;
+&lt;li&gt;磁盘检验： fsck, badblocks&lt;/li&gt;
+&lt;li&gt;磁盘挂载与卸除： mount, umount&lt;/li&gt;
+&lt;li&gt;磁盘参数修订： mknod, e2label, tune2fs, hdparm&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;配置启动挂载&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;启动挂载 /etc/fstab 及 /etc/mtab&lt;/li&gt;
+&lt;li&gt;特殊装置 loop 挂载(映象档不刻录就挂载使用)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;内存置换空间(swap)之建置&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用实体分割槽建置swap&lt;/li&gt;
+&lt;li&gt;使用文件建置swap&lt;/li&gt;
+&lt;li&gt;swap使用上的限制&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;文件系统的特殊观察与操作&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;boot sector 与 superblock 的关系&lt;/li&gt;
+&lt;li&gt;磁盘空间之浪费问题&lt;/li&gt;
+&lt;li&gt;利用 GNU 的 parted 进行分割行为&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;重点回顾&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;基本上 Linux 的正统文件系统为 Ext2 ，该文件系统内的信息主要有：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;superblock：记录此 filesystem 的整体信息，包括inode/block的总量、使用量、剩余量， 以及文件系统的格式与相关信息等；&lt;/li&gt;
+&lt;li&gt;inode：记录文件的属性，一个文件占用一个inode，同时记录此文件的数据所在的 block 号码；&lt;/li&gt;
+&lt;li&gt;block：实际记录文件的内容，若文件太大时，会占用多个 block 。&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Ext2 文件系统的数据存取为索引式文件系统(indexed allocation)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;需要碎片整理的原因就是文件写入的 block 太过于离散了，此时文件读取的效能将会变的很差所致。 这个时候可以透过碎片整理将同一个文件所属的 blocks 汇整在一起。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Ext2文件系统主要有：boot sector, superblock, inode bitmap, block bitmap, inode table, data block 等六大部分。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;data block 是用来放置文件内容数据地方，在 Ext2 文件系统中所支持的 block 大小有 1K, 2K 及 4K 三种而已&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;inode 记录文件的属性/权限等数据，其他重要项目为： 每个 inode 大小均固定为 128 bytes； 每个文件都仅会占用一个 inode 而已； 因此文件系统能够创建的文件数量与 inode 的数量有关；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;文件的 block 在记录文件的实际数据，目录的 block 则在记录该目录底下文件名与其 inode 号码的对照表；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;日志式文件系统 (journal) 会多出一块记录区，随时记载文件系统的主要活动，可加快系统复原时间；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Linux 文件系统为添加效能，会让主存储器作为大量的磁盘高速缓存；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;实体链接只是多了一个文件名对该 inode 号码的链接而已；&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;符号链接就类似Windows的快捷方式功能。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;磁盘的使用必需要经过：分割、格式化与挂载，分别惯用的命令为：fdisk, mkfs, mount三个命令&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;启动自动挂载可参考/etc/fstab之配置，配置完毕务必使用 mount -a 测试语法正确否；&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;参考资料&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://vbird.dic.ksu.edu.tw/linux_basic/0230filesystem.php#harddisk&quot;&gt;鸟哥的Linux私房菜 第八章&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Linux 3：文件与目录管理</title>
+        <link>/2014/09/19/Linux3.html</link>
+        <guid isPermaLink="true">/2014/09/19/Linux3.html</guid>
+        <pubDate>Fri, 19 Sep 2014 00:00:00 +0800</pubDate>
+        <description>&lt;h3&gt;目录的相关操作&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;.         # 代表此层目录
+..        # 代表上一层目录
+-         # 代表前一个工作目录
+~         # 代表『目前使用者身份』所在的家目录
+~account  # 代表 account 这个使用者的家目录(account是个帐号名称)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;在所有目录底下都会存在的两个目录，分别是&lt;code&gt;.&lt;/code&gt;与&lt;code&gt;..&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;根目录的上一层&lt;code&gt;(..)&lt;/code&gt;与根目录自己&lt;code&gt;(.)&lt;/code&gt;是同一个目录&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;几个常见的处理目录的命令&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cd：变换目录，cd是Change Directory的缩写&lt;/li&gt;
+&lt;li&gt;pwd：显示目前的目录，pwd是Print Working Directory的缩写&lt;/li&gt;
+&lt;li&gt;mkdir：创建一个新的目录&lt;/li&gt;
+&lt;li&gt;rmdir：删除一个空的目录&lt;/li&gt;
+&lt;li&gt;mv：移动文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;pwd -P                   # -P：代表显示正确的完整路径，而不是连接路径
+mkdir -m xxx             # -m：直接配置文件的权限
+mkdir -p test1/test2     # -p：直接将所需要的目录(包含上一级目录)递回创建起来！
+PATH=&amp;quot;$PATH&amp;quot;:/root       # 将/root路径加入PATH环境变量中
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;文件与目录管理&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;文件与目录的检视： ls&lt;/li&gt;
+&lt;li&gt;复制、删除与移动： cp, rm, mv&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;cp -a        # 将文件的所有特性都一起复制过来
+cp -p        # 连同文件的属性一起复制过去，而非使用默认属性(备份常用)
+cp -r        # 可以复制目录，但是，文件与目录的权限可能会被改变
+rm -i        # 互动模式，在删除前会询问使用者是否动作
+rm -r        # 连目录下的东西一起删掉，并且不会询问，慎用
+mv -f        # force强制移动，如果目标文件已经存在，不会询问而直接覆盖
+mv -i        # 若目标文件 (destination) 已经存在时，就会询问是否覆盖
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;文件内容查询&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;直接检视文件内容： cat, tac, nl （常用）&lt;/li&gt;
+&lt;li&gt;可翻页检视： more, less （常用）&lt;/li&gt;
+&lt;li&gt;数据撷取： head, tail&lt;/li&gt;
+&lt;li&gt;非纯文字档： od&lt;/li&gt;
+&lt;li&gt;修改文件时间与建置新档： touch&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;cat [-AbEnTv] filename # 由第一行开始显示文件内容。-b列出非空白行行号；-n列出所有行号。
+tac                    # 从最后一行开始显示文件内容，tac就是cat倒着写！
+nl                     # 显示文件内容，顺便输出行号
+more                   # 一页一页地显示文件内容
+less                   # 与more类似，但可以往前翻页
+head [-n number]       # 只看文件头几行，默认是10行，number是自定义行数
+tail                   # 只看文件尾几行，文件很大的时候常用
+od                     # 以二进制方式读取文件内容
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;文件与目录的默认权限与隐藏权限&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;文件默认权限：umask&lt;/li&gt;
+&lt;li&gt;文件隐藏属性： chattr, lsattr&lt;/li&gt;
+&lt;li&gt;文件特殊权限：SUID, SGID, SBIT, 权限配置&lt;/li&gt;
+&lt;li&gt;观察文件类型：file&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;umask           # 后三位数是被拿走的权限分数，比如0022，u没有被拿走权限，g和o被拿走了w权限
+umask -S        # 以符号类型来显示权限
+umask number    # 配置自己需要的权限
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;在默认的情况中，root的umask会拿掉比较多的属性，root的umask默认是&lt;code&gt;022&lt;/code&gt;， 这是基於安全的考量啦～至於一般身份使用者，通常他们的 umask 为&lt;code&gt;002&lt;/code&gt; ，亦即保留同群组的写入权力。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;特殊权限&lt;code&gt;s&lt;/code&gt;和&lt;code&gt;t&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Set UID，简称SUID，当s标志在文件拥有者的x项目为SUID，对目录无效&lt;/li&gt;
+&lt;li&gt;Set GID，简称SGID，当s标志在群组的x项目为SGID，对目录有效&lt;/li&gt;
+&lt;li&gt;Sticky Bit, 简称SBIT，目前只针对目录有效，对於文件已经没有效果了&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;配置SUID,SGID,SBIT权限&lt;/h3&gt;
+
+&lt;p&gt;在原有的权限数字前面加上需要配置的权限数字。
+比如&lt;code&gt;755&lt;/code&gt;-&amp;gt;&lt;code&gt;4755&lt;/code&gt; ，就意味着&lt;code&gt;-rwxr-xr-x&lt;/code&gt;变为了&lt;code&gt;-rwsr-xr-x&lt;/code&gt;。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;4 为 SUID&lt;/li&gt;
+&lt;li&gt;2 为 SGID&lt;/li&gt;
+&lt;li&gt;1 为 SBIT&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;chmod 4755 filename
+chmod u=rwxs,go=x test; ls -l test      # 配置权限为-rws--x--x的模样
+chmod g+s,o+t test; ls -l test          # 配置权限为-rws--s--t，即加入SGID,SBIT权限
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;命令与文件的搜寻&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;命令档名的搜寻：which&lt;/li&gt;
+&lt;li&gt;文件档名的搜寻：whereis, locate, find&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;权限与命令的关系&lt;/h3&gt;
+
+&lt;h4&gt;一、让使用者能进入某目录成为『可工作目录』的基本权限为何：&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;可使用的命令：例如 cd 等变换工作目录的命令；&lt;/li&gt;
+&lt;li&gt;目录所需权限：使用者对这个目录至少需要具有 x 的权限&lt;/li&gt;
+&lt;li&gt;额外需求：如果使用者想要在这个目录内利用 ls 查阅档名，则使用者对此目录还需要 r 的权限。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;二、使用者在某个目录内读取一个文件的基本权限为何？&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;可使用的命令：例如本章谈到的 cat, more, less等等&lt;/li&gt;
+&lt;li&gt;目录所需权限：使用者对这个目录至少需要具有 x 权限；&lt;/li&gt;
+&lt;li&gt;文件所需权限：使用者对文件至少需要具有 r 的权限才行！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;三、让使用者可以修改一个文件的基本权限为何？&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;可使用的命令：例如 nano 或未来要介绍的 vi 编辑器等；&lt;/li&gt;
+&lt;li&gt;目录所需权限：使用者在该文件所在的目录至少要有 x 权限；&lt;/li&gt;
+&lt;li&gt;文件所需权限：使用者对该文件至少要有 r, w 权限&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;四、让一个使用者可以创建一个文件的基本权限为何？&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;目录所需权限：使用者在该目录要具有 w,x 的权限，重点在 w 啦！&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;五、让使用者进入某目录并运行该目录下的某个命令之基本权限为何？&lt;/h4&gt;
+
+&lt;ul&gt;
+&lt;li&gt;目录所需权限：使用者在该目录至少要有 x 的权限；&lt;/li&gt;
+&lt;li&gt;文件所需权限：使用者在该文件至少需要有 x 的权限&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Linux 2：文件权限与目录配置</title>
+        <link>/2014/09/17/Linux2.html</link>
+        <guid isPermaLink="true">/2014/09/17/Linux2.html</guid>
+        <pubDate>Wed, 17 Sep 2014 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;Linux最优秀的地方之一，就在于它的多用户、多任务环境。Linux一般将文件可存取访问的身份分为3个类别，分别是owner（用户）、group（用户组）、others（其他人），且3种身份都各自有自己的read，write，execute等权限。&lt;/p&gt;
+
+&lt;h3&gt;用户身份与用户组记录的文件&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;\etc\passwd     #所有系统账号的相关信息
+\etc\shadow     #个人的密码
+\etc\group      #Linux所有的组名
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;文件权限概念&lt;/h3&gt;
+
+&lt;p&gt;当屏幕前面出现“Permission deny”的时候，肯定是权限设置错误。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ls -al          #ls:list，列出所有文件的详细信息
+ls -l           #显示文件，属性的第一个字段是文件的权限，共10位，比如-rwxr-xr--，表示owner具有rwx权限，group具有rx权限，others只具有r权限
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;改变文件属性与权限&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;chgrp       #改变文件所属用户组，具体句法记得使用 man page 查询
+chown -R 用户账号:所在组群 文件名      #改变文件所有者
+chmod       #改变文件的权限
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;其中，chmod修改权限的方法有两种，分别是符号法与数字法，数字法中r，w，x的数值分别是4，2，1。&lt;/p&gt;
+
+&lt;p&gt;要开放“目录”（注意不是“文件”）给任何人看，应该至少同时给予r和x权限，但w权限不可随便给予。&lt;/p&gt;
+
+&lt;h3&gt;文件种类与扩展名&lt;/h3&gt;
+
+&lt;p&gt;使用&lt;code&gt;ls -l&lt;/code&gt;查看到的十个字符中，第一个字符为文件的类型：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;-: 普通文件（regular file）&lt;/li&gt;
+&lt;li&gt;d: 目录文件（directory）&lt;/li&gt;
+&lt;li&gt;l: 连接文件，类似于windows的快捷方式（link）&lt;/li&gt;
+&lt;li&gt;b: 块设备文件（block）&lt;/li&gt;
+&lt;li&gt;c: 字符设备文件（character）&lt;/li&gt;
+&lt;li&gt;s: 套接字（sockets）&lt;/li&gt;
+&lt;li&gt;p: 管道（FIFO, pipe）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Linux目录配置标准：FHS&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/public/img/linuxDIRTREE.gif&quot; alt=&quot;1&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;根据FHS的定义，最好将&lt;code&gt;/var&lt;/code&gt;独立出来，这样至少/var死掉的时候，根目录还活着，还能够进入救援模式。&lt;/p&gt;
+
+&lt;h3&gt;绝对路径与相对路径&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cd/var/log(absolute)&lt;/li&gt;
+&lt;li&gt;cd../var/log(relative)&lt;/li&gt;
+&lt;li&gt;.: 代表当前的目录，也可以用./来表示&lt;/li&gt;
+&lt;li&gt;..: 代表上一层目录，也可以用../来表示&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;例子&lt;/h3&gt;
+
+&lt;p&gt;将install.log文件复制成为LAYtest.log，并且要给linanya这个人读写权限，可以这样做：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;[root@localhost ~]# cp install.log LAYtest.log     #若复制文件夹，用cp -r
+[root@localhost ~]# ls -al LAYtest.log 
+-rw-r--r-- 1 root root 62826 9月  17 15:19 LAYtest.log     #虽然完成了复制，但仍然是root的文件
+[root@localhost ~]# chown linanya LAYtest.log 
+[root@localhost ~]# ls -al LAYtest.log       
+-rw-r--r-- 1 linanya root 62826 9月  17 15:19 LAYtest.log  #文件变成linanya的
+[root@localhost ~]# 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+      </item>
+    
+      <item>
+        <title>Linux 1：登陆与在线求助man page</title>
+        <link>/2014/09/13/Linux.html</link>
+        <guid isPermaLink="true">/2014/09/13/Linux.html</guid>
+        <pubDate>Sat, 13 Sep 2014 00:00:00 +0800</pubDate>
+        <description>&lt;h3&gt;查看内核版本&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;uname -r
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;稳定版本的偶数版，如2.6.x，适合于商业与家用环境使用；开发中版本，如2.5.x，适合开发特殊功能的环境。&lt;/p&gt;
+
+&lt;h3&gt;登陆&lt;/h3&gt;
+
+&lt;p&gt;Mac：（若以root身份登陆，将username改为root）&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ssh username@IPaddress
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Linux：(若以root身份登陆，将username删掉）Linux默认root的提示符为#,而一般身份用户的提示符为$。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;su - username
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;注销Linux&lt;/h3&gt;
+
+&lt;p&gt;注销Linux并不意味着关机，只是用户离开系统。&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;exit
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;基础命令的操作&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;command [-options] parameter1 parameter2 ···
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;echo $LANG   #显示目前支持的语言
+LANG=en_US   #将语言改为英文系
+date         #显示日期与实践
+cal 10 2014  #显示日历
+bc           #计算器
+quit         #退出
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;重要的热键&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;[tab]&lt;/code&gt;：连按两次，具有“命令补全”和“文件补齐”的作用。
+&lt;code&gt;[control]+c&lt;/code&gt;：中断目前程序。
+&lt;code&gt;[control]+d&lt;/code&gt;：键盘输入结束；直接离开文字界面（相当于`&lt;code&gt;exit&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;h3&gt;在线求助 man page&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;man command  #command是要查询的命令名称
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;进入man命令后，可按&lt;code&gt;空格&lt;/code&gt;往下翻页，按&lt;code&gt;q&lt;/code&gt;键离开。
+在man page中，可以在任何时候输入&lt;code&gt;/keyword&lt;/code&gt;来查询关键字，比如/date.&lt;/p&gt;
+
+&lt;h3&gt;正确的关机方法&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;who         #查看目前有谁在线
+netstat -a  #查看网络的联机状态
+ps -aux     #查看后台执行的程序
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;数据同步写入磁盘：为了防止不正常关机导致的内存数据没有来得及写入磁盘，在文字界面输入&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;sync 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;惯用的关机命令：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;shutdown -h now     #立刻关机
+shutdown -h 20:25   #晚上8点25分关机
+shutdown -h +10     #过十分钟后关机
+shutdown -r now     #立刻重启
+shutdown -r +30 ‘The system will be reboot’    #再过30分钟关机，并显示后面的消息给所有在线用户
+shutdown -k now ‘The system will be reboot’    #仅发出警告，系统并不会真正关机
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;重启、关机：reboot，halt，poweroff。务必用man去查询一下。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Linux 0：实际问题</title>
+        <link>/2014/09/12/Linux-Problems.html</link>
+        <guid isPermaLink="true">/2014/09/12/Linux-Problems.html</guid>
+        <pubDate>Fri, 12 Sep 2014 00:00:00 +0800</pubDate>
+        <description>&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://book.douban.com/subject/4889838/&quot;&gt;《鸟哥的Linux私房菜——基础学习篇》&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://book.douban.com/subject/2338464/&quot;&gt;《鸟哥的Linux私房菜——服务器架设篇》&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;本系列文章分为两部分：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;系统学习上面两本书的笔记。&lt;/li&gt;
+&lt;li&gt;实际中遇到的问题及解决方案，即本文内容。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;实际问题&lt;/h2&gt;
+
+&lt;h2&gt;1. 建立网络映射&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Mac：&lt;code&gt;Finder&lt;/code&gt;-&amp;gt;&lt;code&gt;前往&lt;/code&gt;-&amp;gt;&lt;code&gt;连接服务器&lt;/code&gt;-&amp;gt;输入&lt;code&gt;smb://IPaddress/samba&lt;/code&gt;-&amp;gt;&lt;code&gt;连接&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Linux：&lt;code&gt;位置&lt;/code&gt;-&amp;gt;&lt;code&gt;连接服务器&lt;/code&gt;-&amp;gt;“服务类型”选择&lt;code&gt;自定义位置&lt;/code&gt;-&amp;gt;输入&lt;code&gt;smb://IPaddress/samba&lt;/code&gt;-&amp;gt;&lt;code&gt;连接&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;2. ssh登陆失败&lt;/h2&gt;
+
+&lt;p&gt;以root身份远程登陆服务器，密码正确，却显示如下警告：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;man-in-the-middle attack&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;!
+It is also possible that a host key has just been changed.
+The fingerprint &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; the RSA key sent by the remote host is
+3a:17:4b:6e:62:e6:94:df:09:78:99:90:51:68:18:62.
+Please contact your system administrator.
+Add correct host key in /Users/AnyaLin/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /Users/AnyaLin/.ssh/known_hosts:4
+RSA host key &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; 222.195.93.129 has changed and you have requested strict checking.
+Host key verification failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;解决方法：&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vi ~/.ssh/known_hosts     &lt;span class=&quot;c&quot;&gt;#选中最后一条登陆记录，双击`d`删除，按“：”进入末行编辑模式，输入“x”，回车&lt;/span&gt;
+ssh root@222.195.93.129   &lt;span class=&quot;c&quot;&gt;#再次登陆&lt;/span&gt;
+The authenticity of host &lt;span class=&quot;s1&quot;&gt;&amp;#39;222.195.93.129 (222.195.93.129)&amp;#39;&lt;/span&gt; can&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;t be established.
+RSA key fingerprint is 3a:17:4b:6e:62:e6:94:df:09:78:99:90:51:68:18:62.
+Are you sure you want to &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt; connecting &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;yes/no&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;?    &lt;span class=&quot;c&quot;&gt;#输入yes&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;3. tar.gz 文件解压&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;打开终端&lt;/li&gt;
+&lt;li&gt;进入需要解压的xxxx.tar.gz文件所在目录&lt;/li&gt;
+&lt;li&gt;$ tar xvfz xxxx.tar.gz&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt;&amp;lt; HEAD&lt;/p&gt;
+
+&lt;h2&gt;4. 新建文件命令&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;touch a.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;=======&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;cc60f2ed32a5f9727a68a2eb7f2f6a8a1eeac51a&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>php文件上传</title>
+        <link>/2014/05/01/files-upload.html</link>
+        <guid isPermaLink="true">/2014/05/01/files-upload.html</guid>
+        <pubDate>Thu, 01 May 2014 00:00:00 +0800</pubDate>
+        <description>&lt;h3&gt;什么是文件上传&lt;/h3&gt;
+
+&lt;p&gt;把&lt;code&gt;浏览器&lt;/code&gt;所在电脑的文件存放到&lt;code&gt;服务器&lt;/code&gt;上, 这个过程称之为文件上传&lt;/p&gt;
+
+&lt;p&gt;上传分为两个部分:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;将浏览器所在电脑的文件选中,提交给服务器,服务器要接收文件.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;服务器必须要接收文件: apache不能接收文件,PHP负责接收.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;前期准备&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;设置php.ini&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;确保上传功能被打开&lt;/p&gt;
+
+&lt;p&gt;file_uploads = On&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;设置上传文件的临时存放目录&lt;/p&gt;
+
+&lt;p&gt;upload&lt;em&gt;tmp&lt;/em&gt;dir =&amp;quot;E:\PHP\upload&amp;quot;  #;设置文件上传临时保存路径,默认是在c:/windows/temp&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;设置文件表单域&lt;/p&gt;
+
+&lt;p&gt;&lt;input type=’file’ name=’myfile’&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;设置post提交二进制&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;enctype=”multipart/form-data”&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;code&gt;$_FILES获取的数据&lt;/code&gt;&lt;/h4&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;myfile&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;                                         &lt;span class=&quot;c1&quot;&gt;#上传文件的文件名&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;123123.jpg&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;type&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;                                         &lt;span class=&quot;c1&quot;&gt;#上传文件的类型:大类型/格式  称为MIME类型&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;image/jpeg&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;tmp_name&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;                                     &lt;span class=&quot;c1&quot;&gt;#上传到服务器时临时存储文件路径&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;38&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;E:\PHP\upload\php7FC2.tmp&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;error&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;                                            &lt;span class=&quot;c1&quot;&gt;#错误描述码&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;size&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;                                         &lt;span class=&quot;c1&quot;&gt;#上传文件大小&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;     &lt;span class=&quot;nx&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6340&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3&gt;使用的函数&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Move_uploaded_file(文件所在目录[文件名], 文件要存储的目录[带文件名])&lt;/code&gt;移动文件--&amp;gt;原文件不存在&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Copy(文件所在目录,文件要存储的目录&lt;/code&gt;复制文件--&amp;gt;原文件存在&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;使用时注意的问题&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;move_uploaded_file()&lt;/code&gt;会事先检测源文件是否通过php上传过来的，否则不予移动(&lt;code&gt;只能用post&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;move_uploaded_file()&lt;/code&gt;这个函数虽然&lt;code&gt;多次调用但是只能执行一次&lt;/code&gt;，原因就在于&lt;code&gt;move_uploaded_file()&lt;/code&gt;只支持post提交的信息，也就是用户只提交了一个post，第一次调用被执行后，之后就不是post的值也就是说不在执行了，解决办法就是&lt;code&gt;用copy代替move_uploaded_file()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;封装一个上传文件函数&lt;/h3&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/*&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * 上传文件&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * @param1 array $file,要上传的文件信息&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * @param2 string $path,文件要上传的路径&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * @param3 string &amp;amp;$error,记录错误信息&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * @return string 文件的名字(新名字)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;    */&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;upload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//定义错误信息: 专门记录错误: 在函数外部能访问&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//验证$file的合法性&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;is_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;//不是数组&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;          &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;上传文件不合法!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//验证系统错误处理&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;      &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;error&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]){&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;              &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;文件过大,超过服务器允许的大小!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;              &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;              &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;文件超过浏览器允许的大小!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;              &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;              &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;文件只上传部分!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt;              &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;              &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;用户没有选中要上传的文件!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;              &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;              &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;服务器错误!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt;              &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//都没有错误: 移动文件&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt;      &lt;span class=&quot;nv&quot;&gt;$filename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getRandomName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt;      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;move_uploaded_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;tmp_name&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;//成功&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;40&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;41&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;42&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;//失败&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;43&lt;/span&gt;          &lt;span class=&quot;nv&quot;&gt;$error&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;文件移动失败!&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;44&lt;/span&gt;          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;45&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;46&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;47&lt;/span&gt;  &lt;span class=&quot;cm&quot;&gt;/*&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;48&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * 生成文件名: YYYYmmddHHIISS + 随机6位字符串&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;49&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * @param1 string $name,文件原始名字: 在浏览器所在电脑的名字&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;50&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;     * @return string 新的名字&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;51&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;    */&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;52&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getRandomName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;53&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//构造时间日期部分&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;54&lt;/span&gt;      &lt;span class=&quot;nv&quot;&gt;$newname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;YmdHis&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;55&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//获取随机部分&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;56&lt;/span&gt;      &lt;span class=&quot;nv&quot;&gt;$str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;57&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//随机取6位&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;58&lt;/span&gt;      &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;59&lt;/span&gt;          &lt;span class=&quot;c1&quot;&gt;//每次随机取一位&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;60&lt;/span&gt;          &lt;span class=&quot;nv&quot;&gt;$newname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mt_rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)];&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;61&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;62&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//构造后缀名&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;63&lt;/span&gt;      &lt;span class=&quot;nv&quot;&gt;$newname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;strrchr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;.&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;64&lt;/span&gt;      &lt;span class=&quot;c1&quot;&gt;//返回&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;65&lt;/span&gt;      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$newname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;66&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+</description>
+      </item>
+    
+  </channel>
+</rss>

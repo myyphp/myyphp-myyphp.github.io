@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+<title>Git常用命令速查表 | 圣泉山人—随记</title>
+<meta name="author" content="圣泉山人">
+
+
+<link rel="shortcut icon" href="/public/img/myy.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/public/css/bootstrap.css">
+<link rel="stylesheet" href="/public/css/font-awesome.css">
+<link rel="stylesheet" href="/public/js/prettify/prettify.css">
+<link rel="stylesheet" href="/public/css/base.css">
+<link href="/pages/atom.xml" rel="alternate" title="圣泉山人—随记" type="application/atom+xml">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-lg-3 col-sm-13 col-xs-13 aside visible-md visible-lg">
+  <div class="row">
+    <div class="col-md-2 col-xs-2 aside1">
+      <br>
+      <a class="pjaxlink" href="/"><img src="/public/img/myy.png" class="img-ronuded avatar" style="border-width:0px; border-color:#000"></a>
+      <br><br><br><br>
+      <ul class="nav nav-pills nav-stacked">
+             <!-- 这里是aside1的读书、生活、科研、技术、绘画-->
+         <li><a href="#笔记" data-toggle="tab">笔记</a></li>
+        
+        <li><a href="#tags" data-toggle="tab">标签</a></li>  
+        <li><a class="pjaxlink" href="/pages/archive.html">归档</a></li>
+        <li><a class="pjaxlink" href="/pages/about.html">关于</a></li>  
+        <!-- <li><a href="#tags" data-toggle="tab"><i class="fa fa-tags fa-lg"></i></a></li>
+        <li><a class="pjaxlink" href="/pages/archive.html"><i class="fa fa-archive fa-lg"></i></a></li>
+        <li><a class="pjaxlink" href="/pages/about.html"><i class="fa fa-user fa-lg"></i></a></li>
+        这是原来现实汉字的代码，我改为了图标 -->
+      </ul>
+      <div class="aside1_bottom">
+        <table class="table table-condensed">
+          <tr>
+            <td><a href="/pages/atom.xml" target="_blank"><i class="fa fa-rss fa-lg" style="color:#fff;"></i></a></td>
+            <td><a href="mailto:myyd@outlook.com"><i class="fa fa-envelope-o fa-lg" style="color:#fff;"></i></a></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-10 col-xs-10 aside2">
+      <div class="row">
+        <div class="tab-content"> 
+           
+            <div class="tab-pane" id="笔记">
+              <div class="list-group">
+                <!--<h2 class="center">笔记</h2>-->     <!--原来aside2上面的大标题-->
+                
+                  <a href="/2015/10/02/http.html" class="list-group-item-lay pjaxlink">http协议</a>
+                
+                  <a href="/2015/08/03/about-optimize.html" class="list-group-item-lay pjaxlink">高并发</a>
+                
+                  <a href="/2015/01/30/Git-Resources.html" class="list-group-item-lay pjaxlink">Git常用命令速查表</a>
+                
+                  <a href="/2014/09/30/Linux4.html" class="list-group-item-lay pjaxlink">Linux 4：磁盘与文件系统管理</a>
+                
+                  <a href="/2014/09/19/Linux3.html" class="list-group-item-lay pjaxlink">Linux 3：文件与目录管理</a>
+                
+                  <a href="/2014/09/17/Linux2.html" class="list-group-item-lay pjaxlink">Linux 2：文件权限与目录配置</a>
+                
+                  <a href="/2014/09/13/Linux.html" class="list-group-item-lay pjaxlink">Linux 1：登陆与在线求助man page</a>
+                
+                  <a href="/2014/09/12/Linux-Problems.html" class="list-group-item-lay pjaxlink">Linux 0：实际问题</a>
+                
+                  <a href="/2014/05/01/files-upload.html" class="list-group-item-lay pjaxlink">php文件上传</a>
+                
+              </div>
+            </div>
+                
+          <div class="tab-pane" id="tags">
+            <div class="panel-group" id="accordion">
+              <!--<h2 class="center">标签</h2>-->
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#文件上传">文件上传</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="文件上传" class="panel-collapse collapse">
+                    
+                      <a  href='/2014/05/01/files-upload.html' class="list-group-item pjaxlink">
+                        php文件上传
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#Linux">Linux</a>
+                      <span class="badge pull-right">5</span>
+                    </h4>
+                  </div>
+                  <div id="Linux" class="panel-collapse collapse">
+                    
+                      <a  href='/2014/09/30/Linux4.html' class="list-group-item pjaxlink">
+                        Linux 4：磁盘与文件系统管理
+                      </a>
+                    
+                      <a  href='/2014/09/19/Linux3.html' class="list-group-item pjaxlink">
+                        Linux 3：文件与目录管理
+                      </a>
+                    
+                      <a  href='/2014/09/17/Linux2.html' class="list-group-item pjaxlink">
+                        Linux 2：文件权限与目录配置
+                      </a>
+                    
+                      <a  href='/2014/09/13/Linux.html' class="list-group-item pjaxlink">
+                        Linux 1：登陆与在线求助man page
+                      </a>
+                    
+                      <a  href='/2014/09/12/Linux-Problems.html' class="list-group-item pjaxlink">
+                        Linux 0：实际问题
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#Git">Git</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="Git" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/01/30/Git-Resources.html' class="list-group-item pjaxlink">
+                        Git常用命令速查表
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#高并发">高并发</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="高并发" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/08/03/about-optimize.html' class="list-group-item pjaxlink">
+                        高并发
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#http协议">http协议</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="http协议" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/10/02/http.html' class="list-group-item pjaxlink">
+                        http协议
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="col-md-13 col-lg-13 col-sm-13 col-xs-13 aside3">
+        <div id="container">
+          <div id="pjax">
+            <div class="row">
+  <div class="col-md-13 aside3-title">
+    <br>
+    <h2 id="#identifier">Git常用命令速查表</h2>
+    2015年01月30日
+  </div>
+  <div class="col-md-13 aside3-content">
+    <hr>
+    <div id="content">
+      <p>master: 默认开发分支</p>
+
+<p>origin: 默认远程版本库</p>
+
+<p>Head: 默认开发分支</p>
+
+<p>Head^: Head的父提交</p>
+
+<h3>创建版本库</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git clone &lt;url&gt;   #克隆远程版本库
+$ git init          #初始化本地版本库
+</code></pre></div>
+<h3>修改和提交</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git status        #查看状态
+$ git diff          #查看变更内容
+$ git add .         #跟踪所有改动过的文件
+$ git add &lt;file&gt;    #跟踪指定的文件
+$ git mv &lt;old&gt;&lt;new&gt; #文件改名
+$ git rm&lt;file&gt;      #删除文件
+$ git rm --cached&lt;file&gt;            #停止跟踪文件但不删除
+$ git commit -m &quot;commit messages&quot;  #提交所有更新过的文件
+$ git commit --amend               #修改最后一次改动
+</code></pre></div>
+<h3>查看提交历史</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git log                    #查看提交历史
+$ git log -p &lt;file&gt;          #查看指定文件的提交历史
+$ git blame &lt;file&gt;           #以列表方式查看指定文件的提交历史
+</code></pre></div>
+<h3>撤销</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git reset --hard HEAD      #撤销工作目录中所有未提交文件的修改内容
+$ git checkout HEAD &lt;file&gt;   #撤销指定的未提交文件的修改内容
+$ git revert &lt;commit&gt;        #撤销指定的提交
+$ git log --before=&quot;1 days&quot;  #退回到之前1天的版本 
+</code></pre></div>
+<h3>分支与标签</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git branch                   #显示所有本地分支
+$ git checkout &lt;branch/tag&gt;    #切换到指定分支和标签
+$ git branch &lt;new-branch&gt;      #创建新分支
+$ git branch -d &lt;branch&gt;       #删除本地分支
+$ git tag                      #列出所有本地标签
+$ git tag &lt;tagname&gt;            #基于最新提交创建标签
+$ git tag -d &lt;tagname&gt;         #删除标签
+</code></pre></div>
+<h3>合并与衍合</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git merge &lt;branch&gt;        #合并指定分支到当前分支
+$ git rebase &lt;branch&gt;       #衍合指定分支到当前分支
+</code></pre></div>
+<h3>远程操作</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">$ git remote -v                   #查看远程版本库信息
+$ git remote show &lt;remote&gt;        #查看指定远程版本库信息
+$ git remote add &lt;remote&gt; &lt;url&gt;   #添加远程版本库
+$ git fetch &lt;remote&gt;              #从远程库获取代码
+$ git pull &lt;remote&gt; &lt;branch&gt;      #下载代码及快速合并
+$ git push &lt;remote&gt; &lt;branch&gt;      #上传代码及快速合并
+$ git push &lt;remote&gt; :&lt;branch/tag-name&gt;  #删除远程分支或标签
+$ git push --tags                       #上传所有标签
+</code></pre></div>
+<h3>资料链接</h3>
+
+<ol>
+<li><a href="https://try.github.io/levels/1/challenges/1">Try Git</a></li>
+</ol>
+
+    </div>
+    <hr>
+    <div id="disqus_thread">
+  <button type="button" name="myyphp" class="btn btn-default show-commend">	
+  	<i class="fa fa-comment-o fa-lg" style="color: #16a095;"></i>     <!-- 修改显示评论按钮图标-->
+  </button>
+</div>
+
+  </div>
+  <!-- 目录 -->
+  <div id="content_table" style="position:fixed;right:20px;top:120px;display:none;">
+    <div class="panel panel-success">
+      <div class="panel-body" id="nav"></div>
+    </div>
+  </div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="position:fixed;right:15px;top:62px;">
+  <button id="content_btn" class="btn btn-primary" style="width:43px; height:34px;">
+    <i class="fa fa-lg fa-plus"></i>
+  </button>
+</div>
+<div style="position:fixed;right:15px;top:20px;">
+  <button id="nav_btn" class="btn btn-primary">
+    <i class="fa fa-lg fa-navicon"></i>
+  </button>
+</div>
+<script type="text/javascript" src="/public/js/jquery.js"></script>
+<script type="text/javascript" src="/public/js/bootstrap.js"></script>
+<script src="/public/js/jquery.pjax.js"></script>
+<script src="/public/js/prettify/prettify.js"></script>
+<script src="/public/js/base.js"></script>
+<!--
+<script src="/public/js/jquery.scrollUp.js"></script>
+-->
+<script>
+    $('a[href="#读书"]').tab('show');
+</script>
+
+
+<!--button是右上方导航和显示目录的按钮-->
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-54262064-1', 'painterlin.com');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>

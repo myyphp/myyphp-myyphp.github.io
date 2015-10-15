@@ -1,0 +1,363 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+<title>http协议 | 圣泉山人—随记</title>
+<meta name="author" content="圣泉山人">
+
+
+<link rel="shortcut icon" href="/public/img/myy.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="/public/css/bootstrap.css">
+<link rel="stylesheet" href="/public/css/font-awesome.css">
+<link rel="stylesheet" href="/public/js/prettify/prettify.css">
+<link rel="stylesheet" href="/public/css/base.css">
+<link href="/pages/atom.xml" rel="alternate" title="圣泉山人—随记" type="application/atom+xml">
+</head>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-lg-3 col-sm-13 col-xs-13 aside visible-md visible-lg">
+  <div class="row">
+    <div class="col-md-2 col-xs-2 aside1">
+      <br>
+      <a class="pjaxlink" href="/"><img src="/public/img/myy.png" class="img-ronuded avatar" style="border-width:0px; border-color:#000"></a>
+      <br><br><br><br>
+      <ul class="nav nav-pills nav-stacked">
+             <!-- 这里是aside1的读书、生活、科研、技术、绘画-->
+         <li><a href="#笔记" data-toggle="tab">笔记</a></li>
+        
+        <li><a href="#tags" data-toggle="tab">标签</a></li>  
+        <li><a class="pjaxlink" href="/pages/archive.html">归档</a></li>
+        <li><a class="pjaxlink" href="/pages/about.html">关于</a></li>  
+        <!-- <li><a href="#tags" data-toggle="tab"><i class="fa fa-tags fa-lg"></i></a></li>
+        <li><a class="pjaxlink" href="/pages/archive.html"><i class="fa fa-archive fa-lg"></i></a></li>
+        <li><a class="pjaxlink" href="/pages/about.html"><i class="fa fa-user fa-lg"></i></a></li>
+        这是原来现实汉字的代码，我改为了图标 -->
+      </ul>
+      <div class="aside1_bottom">
+        <table class="table table-condensed">
+          <tr>
+            <td><a href="/pages/atom.xml" target="_blank"><i class="fa fa-rss fa-lg" style="color:#fff;"></i></a></td>
+            <td><a href="mailto:myyd@outlook.com"><i class="fa fa-envelope-o fa-lg" style="color:#fff;"></i></a></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-10 col-xs-10 aside2">
+      <div class="row">
+        <div class="tab-content"> 
+           
+            <div class="tab-pane" id="笔记">
+              <div class="list-group">
+                <!--<h2 class="center">笔记</h2>-->     <!--原来aside2上面的大标题-->
+                
+                  <a href="/2015/10/02/http.html" class="list-group-item-lay pjaxlink">http协议</a>
+                
+                  <a href="/2015/08/03/about-optimize.html" class="list-group-item-lay pjaxlink">高并发</a>
+                
+                  <a href="/2015/01/30/Git-Resources.html" class="list-group-item-lay pjaxlink">Git常用命令速查表</a>
+                
+                  <a href="/2014/09/30/Linux4.html" class="list-group-item-lay pjaxlink">Linux 4：磁盘与文件系统管理</a>
+                
+                  <a href="/2014/09/19/Linux3.html" class="list-group-item-lay pjaxlink">Linux 3：文件与目录管理</a>
+                
+                  <a href="/2014/09/17/Linux2.html" class="list-group-item-lay pjaxlink">Linux 2：文件权限与目录配置</a>
+                
+                  <a href="/2014/09/13/Linux.html" class="list-group-item-lay pjaxlink">Linux 1：登陆与在线求助man page</a>
+                
+                  <a href="/2014/09/12/Linux-Problems.html" class="list-group-item-lay pjaxlink">Linux 0：实际问题</a>
+                
+                  <a href="/2014/05/01/files-upload.html" class="list-group-item-lay pjaxlink">php文件上传</a>
+                
+              </div>
+            </div>
+                
+          <div class="tab-pane" id="tags">
+            <div class="panel-group" id="accordion">
+              <!--<h2 class="center">标签</h2>-->
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#文件上传">文件上传</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="文件上传" class="panel-collapse collapse">
+                    
+                      <a  href='/2014/05/01/files-upload.html' class="list-group-item pjaxlink">
+                        php文件上传
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#Linux">Linux</a>
+                      <span class="badge pull-right">5</span>
+                    </h4>
+                  </div>
+                  <div id="Linux" class="panel-collapse collapse">
+                    
+                      <a  href='/2014/09/30/Linux4.html' class="list-group-item pjaxlink">
+                        Linux 4：磁盘与文件系统管理
+                      </a>
+                    
+                      <a  href='/2014/09/19/Linux3.html' class="list-group-item pjaxlink">
+                        Linux 3：文件与目录管理
+                      </a>
+                    
+                      <a  href='/2014/09/17/Linux2.html' class="list-group-item pjaxlink">
+                        Linux 2：文件权限与目录配置
+                      </a>
+                    
+                      <a  href='/2014/09/13/Linux.html' class="list-group-item pjaxlink">
+                        Linux 1：登陆与在线求助man page
+                      </a>
+                    
+                      <a  href='/2014/09/12/Linux-Problems.html' class="list-group-item pjaxlink">
+                        Linux 0：实际问题
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#Git">Git</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="Git" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/01/30/Git-Resources.html' class="list-group-item pjaxlink">
+                        Git常用命令速查表
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#高并发">高并发</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="高并发" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/08/03/about-optimize.html' class="list-group-item pjaxlink">
+                        高并发
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#http协议">http协议</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="http协议" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/10/02/http.html' class="list-group-item pjaxlink">
+                        http协议
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="col-md-13 col-lg-13 col-sm-13 col-xs-13 aside3">
+        <div id="container">
+          <div id="pjax">
+            <div class="row">
+  <div class="col-md-13 aside3-title">
+    <br>
+    <h2 id="#identifier">http协议</h2>
+    2015年10月02日
+  </div>
+  <div class="col-md-13 aside3-content">
+    <hr>
+    <div id="content">
+      <h1>http协议</h1>
+
+<blockquote>
+<p>HTTP：HyperText Transfer Protocol ，超文本传输协议</p>
+</blockquote>
+
+<h3>HTTP协议的特点</h3>
+
+<blockquote>
+<ul>
+<li><p>支持c/s模式</p></li>
+<li><p>简单快速：只需请求方法和路径</p></li>
+<li><p>灵活：HTTP协议之间并没规定传输的数据的内容，可以是字符流也可以是二进制</p></li>
+<li><p>无连接：每次连接只处理一个请求，当浏览器发起一次请求，服务器只能响应一次，一旦请求被服务器请求完毕，浏览器就会与服务器断开连接。</p></li>
+<li><p>事务处理没记忆能力，http协议的无连接：一次请求只能有一个响应，多次请求间服务器是不能识别浏览器的（健忘症）</p></li>
+</ul>
+</blockquote>
+
+<h3>http协议由两部分组成：</h3>
+
+<blockquote>
+<ul>
+<li><p>http请求：浏览器向服务器发出请求的时候，应该遵循的协议</p></li>
+<li><p>http相应：服务器向浏览器返回响应的时候，应该遵循的协议</p></li>
+</ul>
+</blockquote>
+
+<h4>http请求</h4>
+
+<blockquote>
+<ul>
+<li><p><strong>请求行</strong>： 独占一行，请求方式（GET和POST URI）资源路径  协议版本（HTTP/1.1）</p></li>
+<li><p><strong>请求头</strong>： 每一个请求他占一行，每一个请求头就是一个具体的协议：  协议名：协议内容</p></li>
+<li><p><strong>空行</strong>   :  告诉服务器，请求头已经结束，下面的内容是请求数据</p></li>
+<li><p><strong>请求数据</strong>: POST形式提交数据的时候，才会的数据。  表单名字=值&amp;表单名字=值。。</p></li>
+</ul>
+</blockquote>
+
+<h4>常见的请求头</h4>
+
+<blockquote>
+<ul>
+<li><p>Host：          服务器的主机地址，通常是主机名   比如： host：www.itcast.cn</p></li>
+<li><p>Accept-encoding：   接收的文件编码格式（不是字符集，gzip分类）</p></li>
+<li><p>Referer：       当前请求是由上一次什么请求发展而来，记录的是上一次请求的url (可以用于防盗链)</p></li>
+<li><p>Connection：        保存连接，在http/1.1协议之后，都是keep-alive，一次请求还没有被完全响应之间，不要断开连接</p></li>
+<li><p>Accept-language：   浏览器可以接收的语种（中文、英文）</p></li>
+<li><p>Cookie：        是一种服务器将数据保存在浏览器上的技术：浏览器能够将本地的属于当前请求的服务器的cookie数据通过cookie协议进行携带</p></li>
+<li><p>User-agent：        用户代理，代表当前浏览器的大部分信息</p></li>
+<li><p>Accept：        浏览器能够接收的数据格式（text/html/image/png等</p></li>
+<li><p>Content-length   （post：提交的数据的长度，只post才数据提交（GET数据是在URI上</p></li>
+<li><p>If-modified-since    （get：浏览器会缓存之前请求过的数据，浏览器会在下次请求同样数据的时候，发送一个当前文件的缓存时间告诉服务器进行判断，服务器告诉浏览器是否需要重新请求</p></li>
+<li><p>Content-type     （post：post数据提交的时候才会存在：将数据进行格式转换（转码）</p></li>
+</ul>
+</blockquote>
+
+<h3>http响应</h3>
+
+<blockquote>
+<ul>
+<li><p>状态行        ： 独占一行。 协议版本（HTTP/1.1）     状态码（服务器对响应的一张编码）     状态描述（对状态码的解释）</p></li>
+<li><p>响应头        ： 与请求头一样,很多. 每个响应头占一行: 响应协议名字 : 值</p></li>
+<li><p>空行       :  告诉服务器，请求头已经结束，下面的内容是响应数据</p></li>
+<li><p>响应数据     :  服务器返回的所有数据</p></li>
+</ul>
+</blockquote>
+
+<p><strong>常见的响应头</strong></p>
+
+<blockquote>
+<ul>
+<li><p>Server          : 服务器信息</p></li>
+<li><p>Date         : 响应时间</p></li>
+<li><p>last-modified        : 最后修改时间与请求头中的if-modified-since对应</p></li>
+<li><p>content-length   : 响应的数据的长度</p></li>
+<li><p>content-type     : 数据的类型(text/html,image/png等)</p></li>
+<li><p>Location     : 重定向: 告诉服务器立即重新发起请求,请求location给定的值: 浏览器不需要向下继续解析其他响应头(到此结束)</p></li>
+<li><p>Refresh      :  重定向: 告诉服务器在指定时间之后再重新发起请求,请求refresh中的url对应的值: 浏览器应该继续向下解析</p></li>
+<li><p>content-encodeing    : 与请求头的accept-encoding一致, 文件编码格式,gzip等</p></li>
+<li><p>cache-control        : 缓存控制, 服务器的内容告诉浏览器要不要缓存: no-cache告诉浏览器不要缓存.</p></li>
+</ul>
+</blockquote>
+
+<p><strong>状态码</strong></p>
+
+<p>服务器对于请求的处理情况的基本描述: 浏览器一旦读到对应的状态码就能分析出服务器的处理状态状态码总体分为5类</p>
+
+<blockquote>
+<ul>
+<li><p>1XX: 服务器已经开始处理,但是还没处理完 </p></li>
+<li><p>2XX: 服务器已经正确处理</p></li>
+<li><p>3XX: 重定向: 服务器需要浏览器重新请求</p></li>
+<li><p>4XX: 请求错误: 浏览器发起的请求服务器不能正确解析</p></li>
+<li><p>5XX: 服务器错误: 服务器内部出现了</p></li>
+</ul>
+</blockquote>
+
+<p><strong>常见的状态码</strong></p>
+
+<blockquote>
+<ul>
+<li><p>200: 请求成功(服务器已经正确处理）</p></li>
+<li><p>303: location: 应该重新发起请求</p></li>
+<li><p>304: 告诉浏览器读取本地缓存,不需要重新请求</p></li>
+<li><p>403: forbidden,没权限访问</p></li>
+<li><p>404: not found,找不到目标文件</p></li>
+<li><p>502: bad gateway: 服务器没从上游获取正确的结果</p></li>
+</ul>
+</blockquote>
+
+    </div>
+    <hr>
+    <div id="disqus_thread">
+  <button type="button" name="myyphp" class="btn btn-default show-commend">	
+  	<i class="fa fa-comment-o fa-lg" style="color: #16a095;"></i>     <!-- 修改显示评论按钮图标-->
+  </button>
+</div>
+
+  </div>
+  <!-- 目录 -->
+  <div id="content_table" style="position:fixed;right:20px;top:120px;display:none;">
+    <div class="panel panel-success">
+      <div class="panel-body" id="nav"></div>
+    </div>
+  </div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="position:fixed;right:15px;top:62px;">
+  <button id="content_btn" class="btn btn-primary" style="width:43px; height:34px;">
+    <i class="fa fa-lg fa-plus"></i>
+  </button>
+</div>
+<div style="position:fixed;right:15px;top:20px;">
+  <button id="nav_btn" class="btn btn-primary">
+    <i class="fa fa-lg fa-navicon"></i>
+  </button>
+</div>
+<script type="text/javascript" src="/public/js/jquery.js"></script>
+<script type="text/javascript" src="/public/js/bootstrap.js"></script>
+<script src="/public/js/jquery.pjax.js"></script>
+<script src="/public/js/prettify/prettify.js"></script>
+<script src="/public/js/base.js"></script>
+<!--
+<script src="/public/js/jquery.scrollUp.js"></script>
+-->
+<script>
+    $('a[href="#读书"]').tab('show');
+</script>
+
+
+<!--button是右上方导航和显示目录的按钮-->
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-54262064-1', 'painterlin.com');
+  ga('send', 'pageview');
+</script>
+</body>
+</html>
