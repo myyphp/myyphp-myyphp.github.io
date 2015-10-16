@@ -35,7 +35,8 @@ tags: 文件上传
 - 设置文件表单域
 
 
-    <input type=’file’ name=’myfile’>
+    
+> <input type=’file’ name=’myfile’>
 
 
 - 设置post提交二进制
