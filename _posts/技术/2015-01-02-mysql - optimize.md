@@ -60,11 +60,7 @@ categories: php
 注意：内层from语句查到的临时表，是没有索引的。所以： from的返回内容要尽量少max|min优化技巧
 
 有如下的地区表：
-|| *id*   || *area* || *pid* ||
-|| 1 	  || 中国  	|| 01    ||
-|| 2      || 北京	|| 30    ||
-|| ...    || ...	|| ... 	 ||
-|| 3115   || ...	|| 3113	 ||
+![](http://myyphp.github.io/public/img/posts/mysql_optimize3.png)
 
 我们查min(id)，id是主键，查min(id)非常快,但是，pid上没有索引， 现在要求查询3113地区的min(id)
 `select min(id) from area where pid=69;`
