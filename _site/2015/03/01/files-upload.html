@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>php文件上传 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,97 +276,146 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">php文件上传</h2>
+    2015年03月01日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
+      <h3>什么是文件上传</h3>
 
-<h2>防盗链怎么做？</h2>
+<p>把<code>浏览器</code>所在电脑的文件存放到<code>服务器</code>上, 这个过程称之为文件上传</p>
 
-<blockquote>
-<ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
-</ul>
-</blockquote>
-
-<h2>怎么应对网站高并发？</h2>
-
-<blockquote>
-<p>主要处理方式就是分流。</p>
-
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<p>上传分为两个部分:</p>
 
 <ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
+<li><p>将浏览器所在电脑的文件选中,提交给服务器,服务器要接收文件.</p></li>
+<li><p>服务器必须要接收文件: apache不能接收文件,PHP负责接收.</p></li>
 </ul>
-</blockquote>
 
-<h2>大流量（访问网站的量）解决方案？</h2>
+<h3>前期准备</h3>
 
-<blockquote>
 <ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
-</ul>
-</blockquote>
+<li><p>设置php.ini</p></li>
+<li><p>确保上传功能被打开</p>
 
-<h2>大存储的解决方式？</h2>
+<p>file_uploads = On</p></li>
+<li><p>设置上传文件的临时存放目录</p>
+
+<p>upload<em>tmp</em>dir =&quot;E:\PHP\upload&quot;  #;设置文件上传临时保存路径,默认是在c:/windows/temp</p></li>
+<li><p>设置文件表单域</p></li>
+</ul>
 
 <blockquote>
+<p><input type=’file’ name=’myfile’></p>
+</blockquote>
+
 <ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
+<li><p>设置post提交二进制</p>
+
+<p><code>enctype=”multipart/form-data”</code></p></li>
 </ul>
-</blockquote>
 
-<h2>怎么配置MPM？？？</h2>
+<h4><code>$_FILES获取的数据</code></h4>
 
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno"> 1</span> <span class="k">array</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 2</span>   <span class="p">[</span><span class="s2">&quot;myfile&quot;</span><span class="p">]</span><span class="o">=&gt;</span>
+<span class="lineno"> 3</span>   <span class="k">array</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 4</span>     <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">=&gt;</span>                                         <span class="c1">#上传文件的文件名</span>
+<span class="lineno"> 5</span>     <span class="nx">string</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="s2">&quot;123123.jpg&quot;</span>
+<span class="lineno"> 6</span>     <span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="o">=&gt;</span>                                         <span class="c1">#上传文件的类型:大类型/格式  称为MIME类型</span>
+<span class="lineno"> 7</span>     <span class="nx">string</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="s2">&quot;image/jpeg&quot;</span>
+<span class="lineno"> 8</span>     <span class="p">[</span><span class="s2">&quot;tmp_name&quot;</span><span class="p">]</span><span class="o">=&gt;</span>                                     <span class="c1">#上传到服务器时临时存储文件路径</span>
+<span class="lineno"> 9</span>     <span class="nx">string</span><span class="p">(</span><span class="mi">38</span><span class="p">)</span> <span class="s2">&quot;E:\PHP\upload\php7FC2.tmp&quot;</span>
+<span class="lineno">10</span>     <span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span><span class="o">=&gt;</span>                                            <span class="c1">#错误描述码</span>
+<span class="lineno">11</span>     <span class="nx">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="lineno">12</span>     <span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]</span><span class="o">=&gt;</span>                                         <span class="c1">#上传文件大小</span>
+<span class="lineno">13</span>     <span class="nx">int</span><span class="p">(</span><span class="mi">6340</span><span class="p">)</span>
+<span class="lineno">14</span>   <span class="p">}</span>
+<span class="lineno">15</span> <span class="p">}</span></code></pre></div>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
+<h3>使用的函数</h3>
 
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
 <ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
+<li><code>Move_uploaded_file(文件所在目录[文件名], 文件要存储的目录[带文件名])</code>移动文件--&gt;原文件不存在</li>
+<li><code>Copy(文件所在目录,文件要存储的目录</code>复制文件--&gt;原文件存在</li>
 </ul>
-</blockquote>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
+<h3>使用时注意的问题</h3>
 
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
+<ul>
+<li><code>move_uploaded_file()</code>会事先检测源文件是否通过php上传过来的，否则不予移动(<code>只能用post</code>)</li>
+<li><code>move_uploaded_file()</code>这个函数虽然<code>多次调用但是只能执行一次</code>，原因就在于<code>move_uploaded_file()</code>只支持post提交的信息，也就是用户只提交了一个post，第一次调用被执行后，之后就不是post的值也就是说不在执行了，解决办法就是<code>用copy代替move_uploaded_file()</code></li>
+</ul>
+
+<h3>封装一个上传文件函数</h3>
+
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno"> 1</span> <span class="cm">/*</span>
+<span class="lineno"> 2</span> <span class="cm">     * 上传文件</span>
+<span class="lineno"> 3</span> <span class="cm">     * @param1 array $file,要上传的文件信息</span>
+<span class="lineno"> 4</span> <span class="cm">     * @param2 string $path,文件要上传的路径</span>
+<span class="lineno"> 5</span> <span class="cm">     * @param3 string &amp;$error,记录错误信息</span>
+<span class="lineno"> 6</span> <span class="cm">     * @return string 文件的名字(新名字)</span>
+<span class="lineno"> 7</span> <span class="cm">    */</span>
+<span class="lineno"> 8</span>  <span class="k">function</span> <span class="nf">upload</span><span class="p">(</span><span class="nv">$file</span><span class="p">,</span><span class="nv">$path</span><span class="p">,</span><span class="o">&amp;</span><span class="nv">$error</span><span class="p">){</span>
+<span class="lineno"> 9</span>      <span class="c1">//定义错误信息: 专门记录错误: 在函数外部能访问</span>
+<span class="lineno">10</span>      <span class="c1">//验证$file的合法性</span>
+<span class="lineno">11</span>      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nb">is_array</span><span class="p">(</span><span class="nv">$file</span><span class="p">)){</span>
+<span class="lineno">12</span>          <span class="c1">//不是数组</span>
+<span class="lineno">13</span>          <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;上传文件不合法!&#39;</span><span class="p">;</span>
+<span class="lineno">14</span>          <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">15</span>      <span class="p">}</span>
+<span class="lineno">16</span>      <span class="c1">//验证系统错误处理</span>
+<span class="lineno">17</span>      <span class="k">switch</span><span class="p">(</span><span class="nv">$file</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]){</span>
+<span class="lineno">18</span>          <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+<span class="lineno">19</span>              <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;文件过大,超过服务器允许的大小!&#39;</span><span class="p">;</span>
+<span class="lineno">20</span>              <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">21</span>          <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+<span class="lineno">22</span>              <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;文件超过浏览器允许的大小!&#39;</span><span class="p">;</span>
+<span class="lineno">23</span>              <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">24</span>          <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+<span class="lineno">25</span>              <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;文件只上传部分!&#39;</span><span class="p">;</span>
+<span class="lineno">26</span>              <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">27</span>          <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
+<span class="lineno">28</span>              <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;用户没有选中要上传的文件!&#39;</span><span class="p">;</span>
+<span class="lineno">29</span>              <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">30</span>          <span class="k">case</span> <span class="mi">6</span><span class="o">:</span>
+<span class="lineno">31</span>          <span class="k">case</span> <span class="mi">7</span><span class="o">:</span>
+<span class="lineno">32</span>              <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;服务器错误!&#39;</span><span class="p">;</span>
+<span class="lineno">33</span>              <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">34</span>      <span class="p">}</span>
+<span class="lineno">35</span>      <span class="c1">//都没有错误: 移动文件</span>
+<span class="lineno">36</span>      <span class="nv">$filename</span> <span class="o">=</span> <span class="nx">getRandomName</span><span class="p">(</span><span class="nv">$file</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]);</span>
+<span class="lineno">37</span>      <span class="k">if</span><span class="p">(</span><span class="o">@</span><span class="nb">move_uploaded_file</span><span class="p">(</span><span class="nv">$file</span><span class="p">[</span><span class="s1">&#39;tmp_name&#39;</span><span class="p">],</span><span class="nv">$path</span> <span class="o">.</span> <span class="s1">&#39;/&#39;</span> <span class="o">.</span> <span class="nv">$filename</span><span class="p">))</span>
+<span class="lineno">38</span>      <span class="p">{</span>
+<span class="lineno">39</span>          <span class="c1">//成功</span>
+<span class="lineno">40</span>          <span class="k">return</span> <span class="nv">$filename</span><span class="p">;</span>
+<span class="lineno">41</span>      <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+<span class="lineno">42</span>          <span class="c1">//失败</span>
+<span class="lineno">43</span>          <span class="nv">$error</span> <span class="o">=</span> <span class="s1">&#39;文件移动失败!&#39;</span><span class="p">;</span>
+<span class="lineno">44</span>          <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="lineno">45</span>      <span class="p">}</span>
+<span class="lineno">46</span>  <span class="p">}</span>
+<span class="lineno">47</span>  <span class="cm">/*</span>
+<span class="lineno">48</span> <span class="cm">     * 生成文件名: YYYYmmddHHIISS + 随机6位字符串</span>
+<span class="lineno">49</span> <span class="cm">     * @param1 string $name,文件原始名字: 在浏览器所在电脑的名字</span>
+<span class="lineno">50</span> <span class="cm">     * @return string 新的名字</span>
+<span class="lineno">51</span> <span class="cm">    */</span>
+<span class="lineno">52</span>  <span class="k">function</span> <span class="nf">getRandomName</span><span class="p">(</span><span class="nv">$name</span><span class="p">){</span>
+<span class="lineno">53</span>      <span class="c1">//构造时间日期部分</span>
+<span class="lineno">54</span>      <span class="nv">$newname</span> <span class="o">=</span> <span class="nb">date</span><span class="p">(</span><span class="s1">&#39;YmdHis&#39;</span><span class="p">);</span>
+<span class="lineno">55</span>      <span class="c1">//获取随机部分</span>
+<span class="lineno">56</span>      <span class="nv">$str</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890&#39;</span><span class="p">;</span>
+<span class="lineno">57</span>      <span class="c1">//随机取6位</span>
+<span class="lineno">58</span>      <span class="k">for</span><span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span><span class="nv">$i</span><span class="o">++</span><span class="p">){</span>
+<span class="lineno">59</span>          <span class="c1">//每次随机取一位</span>
+<span class="lineno">60</span>          <span class="nv">$newname</span> <span class="o">.=</span> <span class="nv">$str</span><span class="p">[</span><span class="nb">mt_rand</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$str</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)];</span>
+<span class="lineno">61</span>      <span class="p">}</span>
+<span class="lineno">62</span>      <span class="c1">//构造后缀名</span>
+<span class="lineno">63</span>      <span class="nv">$newname</span> <span class="o">.=</span> <span class="nb">strrchr</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span><span class="s1">&#39;.&#39;</span><span class="p">);</span>
+<span class="lineno">64</span>      <span class="c1">//返回</span>
+<span class="lineno">65</span>      <span class="k">return</span> <span class="nv">$newname</span><span class="p">;</span>
+<span class="lineno">66</span>  <span class="p">}</span></code></pre></div>
 
     </div>
     <hr>

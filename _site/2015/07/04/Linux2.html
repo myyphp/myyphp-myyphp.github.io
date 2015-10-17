@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>Linux 2：文件权限与目录配置 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,98 +276,74 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">Linux 2：文件权限与目录配置</h2>
+    2015年07月04日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
+      <p>Linux最优秀的地方之一，就在于它的多用户、多任务环境。Linux一般将文件可存取访问的身份分为3个类别，分别是owner（用户）、group（用户组）、others（其他人），且3种身份都各自有自己的read，write，execute等权限。</p>
 
-<h2>防盗链怎么做？</h2>
+<h3>用户身份与用户组记录的文件</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">\etc\passwd     #所有系统账号的相关信息
+\etc\shadow     #个人的密码
+\etc\group      #Linux所有的组名
+</code></pre></div>
+<h3>文件权限概念</h3>
 
-<blockquote>
+<p>当屏幕前面出现“Permission deny”的时候，肯定是权限设置错误。</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">ls -al          #ls:list，列出所有文件的详细信息
+ls -l           #显示文件，属性的第一个字段是文件的权限，共10位，比如-rwxr-xr--，表示owner具有rwx权限，group具有rx权限，others只具有r权限
+</code></pre></div>
+<h3>改变文件属性与权限</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">chgrp       #改变文件所属用户组，具体句法记得使用 man page 查询
+chown -R 用户账号:所在组群 文件名      #改变文件所有者
+chmod       #改变文件的权限
+</code></pre></div>
+<p>其中，chmod修改权限的方法有两种，分别是符号法与数字法，数字法中r，w，x的数值分别是4，2，1。</p>
+
+<p>要开放“目录”（注意不是“文件”）给任何人看，应该至少同时给予r和x权限，但w权限不可随便给予。</p>
+
+<h3>文件种类与扩展名</h3>
+
+<p>使用<code>ls -l</code>查看到的十个字符中，第一个字符为文件的类型：</p>
+
 <ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
+<li>-: 普通文件（regular file）</li>
+<li>d: 目录文件（directory）</li>
+<li>l: 连接文件，类似于windows的快捷方式（link）</li>
+<li>b: 块设备文件（block）</li>
+<li>c: 字符设备文件（character）</li>
+<li>s: 套接字（sockets）</li>
+<li>p: 管道（FIFO, pipe）</li>
 </ul>
-</blockquote>
 
-<h2>怎么应对网站高并发？</h2>
+<h3>Linux目录配置标准：FHS</h3>
 
-<blockquote>
-<p>主要处理方式就是分流。</p>
+<p><img src="/public/img/linuxDIRTREE.gif" alt="1"></p>
 
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<p>根据FHS的定义，最好将<code>/var</code>独立出来，这样至少/var死掉的时候，根目录还活着，还能够进入救援模式。</p>
+
+<h3>绝对路径与相对路径</h3>
 
 <ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
+<li>cd/var/log(absolute)</li>
+<li>cd../var/log(relative)</li>
+<li>.: 代表当前的目录，也可以用./来表示</li>
+<li>..: 代表上一层目录，也可以用../来表示</li>
 </ul>
-</blockquote>
 
-<h2>大流量（访问网站的量）解决方案？</h2>
+<h3>例子</h3>
 
-<blockquote>
-<ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
-</ul>
-</blockquote>
-
-<h2>大存储的解决方式？</h2>
-
-<blockquote>
-<ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
-</ul>
-</blockquote>
-
-<h2>怎么配置MPM？？？</h2>
-
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
-<ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
-</ul>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
-
+<p>将install.log文件复制成为LAYtest.log，并且要给linanya这个人读写权限，可以这样做：</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">[root@localhost ~]# cp install.log LAYtest.log     #若复制文件夹，用cp -r
+[root@localhost ~]# ls -al LAYtest.log 
+-rw-r--r-- 1 root root 62826 9月  17 15:19 LAYtest.log     #虽然完成了复制，但仍然是root的文件
+[root@localhost ~]# chown linanya LAYtest.log 
+[root@localhost ~]# ls -al LAYtest.log       
+-rw-r--r-- 1 linanya root 62826 9月  17 15:19 LAYtest.log  #文件变成linanya的
+[root@localhost ~]# 
+</code></pre></div>
     </div>
     <hr>
     <div id="disqus_thread">

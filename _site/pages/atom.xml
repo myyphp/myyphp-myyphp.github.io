@@ -6,119 +6,59 @@
     <description>My personal blog</description>
     
       <item>
-        <title>http协议</title>
-        <link>/2015/10/02/http.html</link>
-        <guid isPermaLink="true">/2015/10/02/http.html</guid>
-        <pubDate>Fri, 02 Oct 2015 00:00:00 +0800</pubDate>
-        <description>&lt;h1&gt;http协议&lt;/h1&gt;
+        <title>memcache实现高可用方案</title>
+        <link>/2015/09/06/Linux%20-%20memcache.html</link>
+        <guid isPermaLink="true">/2015/09/06/Linux%20-%20memcache.html</guid>
+        <pubDate>Sun, 06 Sep 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;memcache实现高可用方案&lt;/h1&gt;
 
-&lt;blockquote&gt;
-&lt;p&gt;HTTP：HyperText Transfer Protocol ，超文本传输协议&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;源码：&lt;a href=&quot;http://yunpan.cn/cHqfqdQagStBV&quot;&gt;http://yunpan.cn/cHqfqdQagStBV&lt;/a&gt;  访问密码 cb6f&lt;/p&gt;
 
-&lt;h3&gt;HTTP协议的特点&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;实现方案&lt;/strong&gt;：使用&lt;code&gt;repcached&lt;/code&gt;实现高可用&lt;br/&gt;
+repcached：全称 replication cached是由日本人发明的memcached的高可用性技术，简称&lt;code&gt;复制缓冲区技术&lt;/code&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;使用场景&lt;/strong&gt;：它是一个&lt;strong&gt;单master&lt;/strong&gt; &lt;strong&gt;单slave&lt;/strong&gt;的方案，但它的 master/slave都是可读写的，而且可以相互同步，如果 master 宕机， slave侦测后，它会自动 listen成为 master；而如果 slave坏掉， master也会侦测到连接断，它就会重新 listen等待新的 slave加入。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;实现步骤&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;环境搭建
+&lt;code&gt;&amp;gt; yum -y install gcc gcc-c++ libevent-devel&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;下载 memcached-1.2.8-repcached-2.2.tar.gz
+&lt;code&gt;&amp;gt; wget http://downloads.sourceforge.net/repcached/memcached-1.2.8-repcached-2.2.tar.gz&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;解压配置repcached
+&lt;code&gt;&amp;gt; tar zxvf memcached-1.2.8-repcached-2.2.tar.gz&lt;/code&gt;
+&lt;code&gt;&amp;gt; ./configure --enable-replication --program-transform-name=s/memcached/repcached/&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;编译安装 
+&lt;code&gt;&amp;gt; make &amp;amp;&amp;amp; make install&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;启动repcached (&lt;strong&gt;注意不要使用 root 来启动服务&lt;/strong&gt;)&lt;/p&gt;
+
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;支持c/s模式&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;简单快速：只需请求方法和路径&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;灵活：HTTP协议之间并没规定传输的数据的内容，可以是字符流也可以是二进制&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;无连接：每次连接只处理一个请求，当浏览器发起一次请求，服务器只能响应一次，一旦请求被服务器请求完毕，浏览器就会与服务器断开连接。&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;事务处理没记忆能力，http协议的无连接：一次请求只能有一个响应，多次请求间服务器是不能识别浏览器的（健忘症）&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;li&gt;启动主服务
+&lt;code&gt;&amp;gt;  /usr/local/bin/repcached -p 11211 -v -d&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;启动从服务
+&lt;code&gt;&amp;gt;  /usr/local/bin/repcached -p 11212 -x localhost -v -d&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;注意：可以使用 &lt;code&gt;ps aux | grep repcached&lt;/code&gt;  命令来查看进程&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;参数解释
+-d ： 后台运行memcached进程
+-p ： 默认监听端口11211  11212
+-x ： 监听高可用机器，如果是监听默认端口不用写端口号，localhost就是监听本机,作用：第二个repcached监听第一个repcached如果有问题就接管&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;测试
+先链接 11211 这个端口的服务，设置name 的值是  asion
+&lt;code&gt;&amp;gt; telnet localhost 11211&lt;/code&gt;
+&lt;code&gt;&amp;gt; set name 0 0 5&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;h3&gt;http协议由两部分组成：&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;注意：在telnet 使用 quit 回车退出&lt;/strong&gt;&lt;/p&gt;
 
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;http请求：浏览器向服务器发出请求的时候，应该遵循的协议&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;http相应：服务器向浏览器返回响应的时候，应该遵循的协议&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;然后使用 11212 这个端口的服务
+    &lt;code&gt;&amp;gt; telnet localhost 11212&lt;/code&gt;
+    &lt;code&gt;&amp;gt; get name&lt;/code&gt;&lt;/p&gt;
 
-&lt;h4&gt;http请求&lt;/h4&gt;
+&lt;p&gt;同样的测试可以反之在进行&lt;/p&gt;
 
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;请求行&lt;/strong&gt;： 独占一行，请求方式（GET和POST URI）资源路径  协议版本（HTTP/1.1）&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;请求头&lt;/strong&gt;： 每一个请求他占一行，每一个请求头就是一个具体的协议：  协议名：协议内容&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;空行&lt;/strong&gt;   :  告诉服务器，请求头已经结束，下面的内容是请求数据&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;请求数据&lt;/strong&gt;: POST形式提交数据的时候，才会的数据。  表单名字=值&amp;amp;表单名字=值。。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;h4&gt;常见的请求头&lt;/h4&gt;
-
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Host：          服务器的主机地址，通常是主机名   比如： host：www.itcast.cn&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Accept-encoding：   接收的文件编码格式（不是字符集，gzip分类）&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Referer：       当前请求是由上一次什么请求发展而来，记录的是上一次请求的url (可以用于防盗链)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Connection：        保存连接，在http/1.1协议之后，都是keep-alive，一次请求还没有被完全响应之间，不要断开连接&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Accept-language：   浏览器可以接收的语种（中文、英文）&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Cookie：        是一种服务器将数据保存在浏览器上的技术：浏览器能够将本地的属于当前请求的服务器的cookie数据通过cookie协议进行携带&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;User-agent：        用户代理，代表当前浏览器的大部分信息&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Accept：        浏览器能够接收的数据格式（text/html/image/png等&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Content-length   （post：提交的数据的长度，只post才数据提交（GET数据是在URI上&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;If-modified-since    （get：浏览器会缓存之前请求过的数据，浏览器会在下次请求同样数据的时候，发送一个当前文件的缓存时间告诉服务器进行判断，服务器告诉浏览器是否需要重新请求&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Content-type     （post：post数据提交的时候才会存在：将数据进行格式转换（转码）&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;h3&gt;http响应&lt;/h3&gt;
-
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;状态行        ： 独占一行。 协议版本（HTTP/1.1）     状态码（服务器对响应的一张编码）     状态描述（对状态码的解释）&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;响应头        ： 与请求头一样,很多. 每个响应头占一行: 响应协议名字 : 值&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;空行       :  告诉服务器，请求头已经结束，下面的内容是响应数据&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;响应数据     :  服务器返回的所有数据&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;常见的响应头&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Server          : 服务器信息&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Date         : 响应时间&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;last-modified        : 最后修改时间与请求头中的if-modified-since对应&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;content-length   : 响应的数据的长度&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;content-type     : 数据的类型(text/html,image/png等)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Location     : 重定向: 告诉服务器立即重新发起请求,请求location给定的值: 浏览器不需要向下继续解析其他响应头(到此结束)&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;Refresh      :  重定向: 告诉服务器在指定时间之后再重新发起请求,请求refresh中的url对应的值: 浏览器应该继续向下解析&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;content-encodeing    : 与请求头的accept-encoding一致, 文件编码格式,gzip等&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;cache-control        : 缓存控制, 服务器的内容告诉浏览器要不要缓存: no-cache告诉浏览器不要缓存.&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;状态码&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;服务器对于请求的处理情况的基本描述: 浏览器一旦读到对应的状态码就能分析出服务器的处理状态状态码总体分为5类&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;1XX: 服务器已经开始处理,但是还没处理完 &lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;2XX: 服务器已经正确处理&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;3XX: 重定向: 服务器需要浏览器重新请求&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;4XX: 请求错误: 浏览器发起的请求服务器不能正确解析&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;5XX: 服务器错误: 服务器内部出现了&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;strong&gt;常见的状态码&lt;/strong&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;200: 请求成功(服务器已经正确处理）&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;303: location: 应该重新发起请求&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;304: 告诉浏览器读取本地缓存,不需要重新请求&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;403: forbidden,没权限访问&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;404: not found,找不到目标文件&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;502: bad gateway: 服务器没从上游获取正确的结果&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;实验完成!&lt;/strong&gt;&lt;/p&gt;
 </description>
       </item>
     
@@ -216,80 +156,10 @@
       </item>
     
       <item>
-        <title>Git常用命令速查表</title>
-        <link>/2015/01/30/Git-Resources.html</link>
-        <guid isPermaLink="true">/2015/01/30/Git-Resources.html</guid>
-        <pubDate>Fri, 30 Jan 2015 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;master: 默认开发分支&lt;/p&gt;
-
-&lt;p&gt;origin: 默认远程版本库&lt;/p&gt;
-
-&lt;p&gt;Head: 默认开发分支&lt;/p&gt;
-
-&lt;p&gt;Head^: Head的父提交&lt;/p&gt;
-
-&lt;h3&gt;创建版本库&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git clone &amp;lt;url&amp;gt;   #克隆远程版本库
-$ git init          #初始化本地版本库
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;修改和提交&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git status        #查看状态
-$ git diff          #查看变更内容
-$ git add .         #跟踪所有改动过的文件
-$ git add &amp;lt;file&amp;gt;    #跟踪指定的文件
-$ git mv &amp;lt;old&amp;gt;&amp;lt;new&amp;gt; #文件改名
-$ git rm&amp;lt;file&amp;gt;      #删除文件
-$ git rm --cached&amp;lt;file&amp;gt;            #停止跟踪文件但不删除
-$ git commit -m &amp;quot;commit messages&amp;quot;  #提交所有更新过的文件
-$ git commit --amend               #修改最后一次改动
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;查看提交历史&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git log                    #查看提交历史
-$ git log -p &amp;lt;file&amp;gt;          #查看指定文件的提交历史
-$ git blame &amp;lt;file&amp;gt;           #以列表方式查看指定文件的提交历史
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;撤销&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git reset --hard HEAD      #撤销工作目录中所有未提交文件的修改内容
-$ git checkout HEAD &amp;lt;file&amp;gt;   #撤销指定的未提交文件的修改内容
-$ git revert &amp;lt;commit&amp;gt;        #撤销指定的提交
-$ git log --before=&amp;quot;1 days&amp;quot;  #退回到之前1天的版本 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;分支与标签&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git branch                   #显示所有本地分支
-$ git checkout &amp;lt;branch/tag&amp;gt;    #切换到指定分支和标签
-$ git branch &amp;lt;new-branch&amp;gt;      #创建新分支
-$ git branch -d &amp;lt;branch&amp;gt;       #删除本地分支
-$ git tag                      #列出所有本地标签
-$ git tag &amp;lt;tagname&amp;gt;            #基于最新提交创建标签
-$ git tag -d &amp;lt;tagname&amp;gt;         #删除标签
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;合并与衍合&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git merge &amp;lt;branch&amp;gt;        #合并指定分支到当前分支
-$ git rebase &amp;lt;branch&amp;gt;       #衍合指定分支到当前分支
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;远程操作&lt;/h3&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git remote -v                   #查看远程版本库信息
-$ git remote show &amp;lt;remote&amp;gt;        #查看指定远程版本库信息
-$ git remote add &amp;lt;remote&amp;gt; &amp;lt;url&amp;gt;   #添加远程版本库
-$ git fetch &amp;lt;remote&amp;gt;              #从远程库获取代码
-$ git pull &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;      #下载代码及快速合并
-$ git push &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;      #上传代码及快速合并
-$ git push &amp;lt;remote&amp;gt; :&amp;lt;branch/tag-name&amp;gt;  #删除远程分支或标签
-$ git push --tags                       #上传所有标签
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h3&gt;资料链接&lt;/h3&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&quot;https://try.github.io/levels/1/challenges/1&quot;&gt;Try Git&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-</description>
-      </item>
-    
-      <item>
         <title>Linux 4：磁盘与文件系统管理</title>
-        <link>/2014/09/30/Linux4.html</link>
-        <guid isPermaLink="true">/2014/09/30/Linux4.html</guid>
-        <pubDate>Tue, 30 Sep 2014 00:00:00 +0800</pubDate>
+        <link>/2015/07/06/Linux4.html</link>
+        <guid isPermaLink="true">/2015/07/06/Linux4.html</guid>
+        <pubDate>Mon, 06 Jul 2015 00:00:00 +0800</pubDate>
         <description>&lt;h3&gt;认识EXT2文件系统&lt;/h3&gt;
 
 &lt;p&gt;每种操作系统能够使用的文件系统并不相同。 举例来说，windows 98以前的微软操作系统主要利用的文件系统是&lt;code&gt;FAT(或FAT16)&lt;/code&gt;，windows 2000以后的版本有所谓的&lt;code&gt;NTFS&lt;/code&gt;文件系统，至于Linux的正统文件系统则为&lt;code&gt;Ext2&lt;/code&gt;(Linux second extended file system, ext2fs)这一个。此外，在默认的情况下，windows操作系统是不会认识Linux的Ext2的。&lt;/p&gt;
@@ -365,9 +235,9 @@ $ git push --tags                       #上传所有标签
     
       <item>
         <title>Linux 3：文件与目录管理</title>
-        <link>/2014/09/19/Linux3.html</link>
-        <guid isPermaLink="true">/2014/09/19/Linux3.html</guid>
-        <pubDate>Fri, 19 Sep 2014 00:00:00 +0800</pubDate>
+        <link>/2015/07/05/Linux3.html</link>
+        <guid isPermaLink="true">/2015/07/05/Linux3.html</guid>
+        <pubDate>Sun, 05 Jul 2015 00:00:00 +0800</pubDate>
         <description>&lt;h3&gt;目录的相关操作&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;.         # 代表此层目录
 ..        # 代表上一层目录
@@ -511,9 +381,9 @@ chmod g+s,o+t test; ls -l test          # 配置权限为-rws--s--t，即加入S
     
       <item>
         <title>Linux 2：文件权限与目录配置</title>
-        <link>/2014/09/17/Linux2.html</link>
-        <guid isPermaLink="true">/2014/09/17/Linux2.html</guid>
-        <pubDate>Wed, 17 Sep 2014 00:00:00 +0800</pubDate>
+        <link>/2015/07/04/Linux2.html</link>
+        <guid isPermaLink="true">/2015/07/04/Linux2.html</guid>
+        <pubDate>Sat, 04 Jul 2015 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;Linux最优秀的地方之一，就在于它的多用户、多任务环境。Linux一般将文件可存取访问的身份分为3个类别，分别是owner（用户）、group（用户组）、others（其他人），且3种身份都各自有自己的read，write，execute等权限。&lt;/p&gt;
 
 &lt;h3&gt;用户身份与用户组记录的文件&lt;/h3&gt;
@@ -580,9 +450,9 @@ chmod       #改变文件的权限
     
       <item>
         <title>Linux 1：登陆与在线求助man page</title>
-        <link>/2014/09/13/Linux.html</link>
-        <guid isPermaLink="true">/2014/09/13/Linux.html</guid>
-        <pubDate>Sat, 13 Sep 2014 00:00:00 +0800</pubDate>
+        <link>/2015/07/03/Linux.html</link>
+        <guid isPermaLink="true">/2015/07/03/Linux.html</guid>
+        <pubDate>Fri, 03 Jul 2015 00:00:00 +0800</pubDate>
         <description>&lt;h3&gt;查看内核版本&lt;/h3&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;uname -r
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -644,9 +514,9 @@ shutdown -k now ‘The system will be reboot’    #仅发出警告，系统并�
     
       <item>
         <title>Linux 0：实际问题</title>
-        <link>/2014/09/12/Linux-Problems.html</link>
-        <guid isPermaLink="true">/2014/09/12/Linux-Problems.html</guid>
-        <pubDate>Fri, 12 Sep 2014 00:00:00 +0800</pubDate>
+        <link>/2015/07/02/Linux-Problems.html</link>
+        <guid isPermaLink="true">/2015/07/02/Linux-Problems.html</guid>
+        <pubDate>Thu, 02 Jul 2015 00:00:00 +0800</pubDate>
         <description>&lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://book.douban.com/subject/4889838/&quot;&gt;《鸟哥的Linux私房菜——基础学习篇》&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://book.douban.com/subject/2338464/&quot;&gt;《鸟哥的Linux私房菜——服务器架设篇》&lt;/a&gt;&lt;/li&gt;
@@ -726,10 +596,730 @@ Are you sure you want to &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt; c
       </item>
     
       <item>
+        <title>Linux环境下redis的搭建</title>
+        <link>/2015/06/15/linux-redis.html</link>
+        <guid isPermaLink="true">/2015/06/15/linux-redis.html</guid>
+        <pubDate>Mon, 15 Jun 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;本文主要介绍Linux环境下redis的搭建&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://yunpan.cn/cHqjyAVnp8hps&quot;&gt;redis 源码包&lt;/a&gt;  访问密码 e97d&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;操作系统环境&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;[root@asion ~]#   lsb_release  -a
+LSB-Version:core-4.0-ia32:core-4.0-noarch:graphics-4.0-ia32:gr  aphics-4.0-noarch:printing-4.0-ia32:printing-4.0-noarch
+Distributor ID:  CentOS
+Description:    CentOS release 5.5 (Final)
+Release:        5.
+Codename:      Final&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;编译环境准备&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;yum -y install make apr* autoconf automake curl-devel gcc gcc-c++ zlib-devel openssl openssl-devel pcre-devel gd kernel keyutils patch perl kernel-headers compat* mpfr cpp glibc libgomp libstdc++-devel ppl cloog-ppl keyutils-libs-devel libcom_err-devel libsepol-devel libselinux-devel krb5-devel zlib-devel libXpm* freetype libjpeg* libpng* php-common php-gd ncurses* libtool* libxml2 libxml2-devel patch cmake&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;安装TCL，不然 redis 的 make test 不会通过。也可以先安装 redis 再回过头来装 TCL (这步可忽略)
+&lt;a href=&quot;http://sourceforge.net/projects/tcl/files/Tcl/&quot;&gt;下载地址&lt;/a&gt; 
+编译安装：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;tar xvzf tcl8.6.1-src.tar.gz
+cd tcl8.6.1/unix/
+./configure
+make
+make test
+make install&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;a href=&quot;http://redis.io/&quot;&gt;下载redis源码&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;wget  http://download.redis.io/releases/redis-3.0.4.tar.gz&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+&lt;li&gt;解压下载的文件(无须configure，在make install 的时候指定安装地址，PREFIX 需要大写)
+&amp;gt; tar -zxvf redis-3.0.4.tar.gz&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;编译安装&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd redis-3.0.4
+make
+make PREFIX=/usr/local/redis install
+cp redis.conf /usr/local/redis/redis.conf &lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;注意：
+如果在执行 make 的时候遇到以下错误(比如本人的 32 位的 CentOS5.5 就碰到了)：&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;zmalloc.o: In function zmalloc&lt;em&gt;used&lt;/em&gt;memory:
+/home/defonds/redis/redis-2.8.10/src/zmalloc.c:223: undefined reference to `_&lt;em&gt;sync&lt;/em&gt;add&lt;em&gt;and&lt;/em&gt;fetch_4&amp;#39;
+collect2: ld returned 1 exit status
+make[1]: *** [redis-server] Error 1
+make[1]: Leaving directory /home/defonds/redis/redis-2.8.10/src
+make: *** [all] Error 2&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;解决方案：在执行 make 时加上参数 CFLAGS=&amp;quot;-march=i686&amp;quot; 就可以了：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;make CFLAGS=&amp;quot;-march=i686&amp;quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;修改redis.conf 配置文件（daemonize yes  后台启动）
+&amp;gt; vim redis.conf
+&amp;gt; daemonize yes 
+&amp;gt; ./bin/redis-server ./redis.conf&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;ps aux | grep redis
+./bin/redis-cli INFO&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;可以对redis 进行检测
+&amp;gt; cd /usr/local/redis/bin
+&amp;gt; ./redis-benchmark -t GET,SET&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当然，也可以添加 -q 对输出结果进行精简&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;./redis-benchmark -q -t GET,SET&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;编译安装完成&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;安装PHP对redis的扩展 （Cannot find config.m4. 解决方案：进入扩展目录）
+下载地址：http://pecl.php.net/package/redis&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;解压文件&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd phpredis-2.2.4
+/usr/local/php/bin/phpize
+./configure --with-php-config=/usr/local/php/bin/php-config
+make
+make install&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;将生成的 memcache.so 动态库的目录添加到php.ini文件里面&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;vim /usr/local/php/etc/php.ini
+extension_dir = &amp;quot;/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626&amp;quot;
+extension=redis.so&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;到网站根目录添加测试文件 redis.php&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /var/www/html
+vim redis.php&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;?&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;         &lt;span class=&quot;nv&quot;&gt;$redis&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;         &lt;span class=&quot;nv&quot;&gt;$redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6379&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;         &lt;span class=&quot;nv&quot;&gt;$redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;test&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;hello world&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;test&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;     &lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;span class=&quot;x&quot;&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在浏览器的地址栏输入 http://localhost/memcache.php输入上述地址后 浏览器页面 输出 hello world ，则成功&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>linux 环境下 php 扩展安装通用方法</title>
+        <link>/2015/06/15/linux-nginx.html</link>
+        <guid isPermaLink="true">/2015/06/15/linux-nginx.html</guid>
+        <pubDate>Mon, 15 Jun 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;linux 环境下 php 扩展安装通用方法&lt;/h1&gt;
+
+&lt;p&gt;(本案例拿 php的mbstring 来做演示)
+1. 首先进入到php源码包中的 ext 目录下 &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;gt; /usr/local/src/php-5.3.28/ext/mbstring
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在mbstring 目录下(/usr/local/src/php-5.3.28/ext/mbstring 目录下)产生configure文件，执行如下命令&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;/usr/local/php/bin/phpize&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置编译(/usr/local/src/php-5.3.28/ext/mbstring 目录下) &lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;./configure --with-php-config=/usr/local/php/bin/php-config &lt;/p&gt;
+
+&lt;p&gt;make &amp;amp;&amp;amp; make install &lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在执行上面命令后会生成一个目录DIR(/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626)，里面包含 mbstring.so 文件&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置 php.ini 文件中的extension_dir=DIR ，然后加入一行  extension=mbstring.so&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;extension_dir=&amp;quot;/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;extension=mbstring.so&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用 phpinfo() 函数测试 &lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;注意：安装php的mcrypt时候出现问题？&lt;/p&gt;
+
+&lt;p&gt;问题描述：在php对mcrypt的扩展时候，出现mcrypt.h not found. Please reinstall libmcrypt&lt;/p&gt;
+
+&lt;p&gt;解决方案：
+- 使用第三方的yum源来解决&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;wget http://www.atomicorp.com/installers/atomic&lt;/p&gt;
+
+&lt;p&gt;sh ./atomic  &lt;/p&gt;
+
+&lt;p&gt;yum  install  php-mcrypt  libmcrypt  libmcrypt-devel&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用php mcrypt 前必须先安装libmcrypt&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;libmcrypt源码安装方法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /usr/local/src&lt;/p&gt;
+
+&lt;p&gt;wget http://softlayer.dl.sourceforge.net/sourceforge/mcrypt/libmcrypt-2.5.8.tar.gz&lt;/p&gt;
+
+&lt;p&gt;tar -zxvf libmcrypt-2.5.8.tar.gz&lt;/p&gt;
+
+&lt;p&gt;cd /usr/local/src/libmcrypt-2.5.8&lt;/p&gt;
+
+&lt;p&gt;./configure --prefix=/usr/local&lt;/p&gt;
+
+&lt;p&gt;make&lt;/p&gt;
+
+&lt;p&gt;make install&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Linux下 nginx安装 + php-fpm安装</title>
+        <link>/2015/06/11/Lamp.html</link>
+        <guid isPermaLink="true">/2015/06/11/Lamp.html</guid>
+        <pubDate>Thu, 11 Jun 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;Linux下 nginx安装 + php-fpm安装&lt;/h1&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;编译环境准备&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;yum -y install gcc automake autoconf libtool make  gcc  gcc-c++&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;一般都需要先装pcre、 zlib，前者为了重写rewrite，后者为了gzip压缩
+源代码目录：/usr/local/src&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;安装pcre 和 zlib 和 ssl&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /usr/local/src
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.34.tar.gz 
+tar -zxvf pcre-8.34.tar.gz
+cd pcre-8.34
+./configure
+make
+make install&lt;/p&gt;
+
+&lt;p&gt;cd /usr/local/src
+wget http://zlib.net/zlib-1.2.8.tar.gz
+tar -zxvf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure
+make
+make install&lt;/p&gt;
+
+&lt;p&gt;cd /usr/local/src
+wget http://www.openssl.org/source/openssl-1.0.1c.tar.gz
+tar -zxvf openssl-1.0.1c.tar.gz&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;nginx 安装&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /usr/local/src
+wget http://nginx.org/download/nginx-1.4.2.tar.gz
+tar -zxvf nginx-1.4.2.tar.gz
+cd nginx-1.4.2&lt;/p&gt;
+
+&lt;p&gt;./configure --sbin-path=/usr/local/nginx/nginx  \
+--conf-path=/usr/local/nginx/nginx.conf  \
+--pid-path=/usr/local/nginx/nginx.pid&lt;/p&gt;
+
+&lt;p&gt;make
+make install&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;安装成功后，/usr/local/nginx 目录下如下
+fastcgi.conf            koi-win             nginx.conf.default
+fastcgi.conf.default    logs                scgi&lt;em&gt;params
+fastcgi&lt;/em&gt;params          mime.types          scgi&lt;em&gt;params.default
+fastcgi&lt;/em&gt;params.default  mime.types.default  uwsgi&lt;em&gt;params
+html                    nginx               uwsgi&lt;/em&gt;params.default
+koi-utf                 nginx.conf          win-utf&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;启动之前先确保 80 端口没有被占用，执行 /usr/local/nginx/nginx 启动&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;netstat -an | grep 80&lt;/p&gt;
+
+&lt;p&gt;lsof -i | grep 80&lt;/p&gt;
+
+&lt;p&gt;netstat -tunpl | grep 80&lt;/p&gt;
+
+&lt;p&gt;/usr/local/nginx/nginx&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;fpm-php 安装(5.3.3之后默认自带 加上参数 --enable-fpm 开启)&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;tar -zxvf php-5.3.28.tar.gz&lt;/p&gt;
+
+&lt;p&gt;cd php-5.3.28&lt;/p&gt;
+
+&lt;p&gt;./configure --prefix=/usr/local/php  --enable-fpm &lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;更改nginx的配置文件 nginx.conf ，增加，并增加php-fpm的配置文件&lt;/p&gt;
+
+&lt;p&gt;location ~ .php$ {
+    root html;
+    fastcgi&lt;em&gt;pass 127.0.0.1:9000;
+    fastcgi&lt;/em&gt;index index.php;
+    fastcgi&lt;em&gt;param SCRIPT&lt;/em&gt;FILENAME $document&lt;em&gt;root$fastcgi&lt;/em&gt;script&lt;em&gt;name;
+    include fastcgi&lt;/em&gt;params;
+}&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /usr/local/phpfpm/etc&lt;/p&gt;
+
+&lt;p&gt;cp php-fpm.conf.default php-fpm.conf&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;将 fpm-php 加入系统服务 (/usr/local/src/php-5.3.28/ )，并启动&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cp ./sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm&lt;/p&gt;
+
+&lt;p&gt;chmod +x /etc/init.d/php-fpm&lt;/p&gt;
+
+&lt;p&gt;chkconfig --add php-fpm&lt;/p&gt;
+
+&lt;p&gt;chkconfig php-fpm on&lt;/p&gt;
+
+&lt;p&gt;service php-fpm start&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用 phpinfo() 函数测试即可&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;附：
+I. 在编译安装时候可能遇到的一些问题
+    a. 编译pcre错误
+    libtool: compile: unrecognized option &lt;code&gt;-DHAVE_CONFIG_H&amp;#39;
+    libtool: compile: Try&lt;/code&gt;libtool --help&amp;#39; for more information.
+    make[1]: *** [pcrecpp.lo] Error 1
+    make[1]: Leaving directory `/usr/local/src/pcre-8.34&amp;#39;
+    make: *** [all] Error 2&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;解决方案：
+
+&amp;gt; yum install -y g++
+
+make 时候出错
+
+解决方案：
+&amp;gt; yum -y install openssl openssl-devel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;II. nginx编译选项&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;a. configure命令是用来检测你的安装平台的目标特征的。它定义了系统的各个方面，包括nginx的被允许使用的连接处理的方法，比如它会检测你是不是有CC或GCC，并不是需要CC或GCC，它是个shell脚本，执行结束时，它会创建一个Makefile文件
+
+b. make是用来编译的，它从Makefile中读取指令，然后编译
+
+c. make install是用来安装的，它也从Makefile中读取指令，安装到指定的位置
+
+nginx的configure命令支持以下参数：
+
+    --prefix=PATH  定义一个安装目录，也就是nginx的安装目录。默认使用 /usr/local/nginx
+
+    --sbin-path=PATH 设置nginx的可执行文件的路径，默认为  prefix/sbin/nginx
+
+    --conf-path=PATH  设置在nginx.conf配置文件的路径。nginx允许使用不同的配置文件启动，通过命令行中的-c选项。默认为prefix/conf/nginx.conf
+
+    --pid-path=PATH  设置nginx.pid文件，将存储的主进程的进程号。安装完成后，可以随时改变的文件名 ， 在nginx.conf配置文件中使用 PID指令。默认情况下，文件名 为prefix/logs/nginx.pid
+
+    --error-log-path=PATH 设置主错误，警告，和诊断文件的名称。安装完成后，可以随时改变的文件名 ，在nginx.conf配置文件中 使用 的error_log指令。默认情况下，文件名 为prefix/logs/error.log
+
+    --http-log-path=PATH 设置主请求的HTTP服务器的日志文件的名称。安装完成后，可以随时改变的文件名 ，在nginx.conf配置文件中 使用 的access_log指令。默认情况下，文件名 为prefix/logs/access.log
+
+    --user=name 设置nginx工作进程的用户，默认的用户名是nobody
+
+    --group=name  设置nginx工作进程的用户组。安装完成后，可以随时更改的名称在nginx.conf配置文件中 使用的 user指令。默认的为非特权用户。
+
+    --with-select_module --without-select_module 启用或禁用构建一个模块来允许服务器使用select()方法。该模块将自动建立，如果平台不支持的kqueue，epoll，rtsig或/dev/poll
+
+    --with-poll_module --without-poll_module 启用或禁用构建一个模块来允许服务器使用poll()方法。该模块将自动建立，如果平台不支持的kqueue，epoll，rtsig或/dev/poll
+
+    --without-http_gzip_module 不编译压缩的HTTP服务器的响应模块。编译并运行此模块需要zlib库
+
+    --without-http_rewrite_module 不编译重写模块。编译并运行此模块需要PCRE库支持
+
+    --without-http_proxy_module 不编译http_proxy模块
+
+    --with-http_ssl_module  使用https协议模块。默认情况下，该模块没有被构建。建立并运行此模块的OpenSSL库是必需的
+
+    --with-pcre=PATH 设置PCRE库的源码路径。PCRE库的源码（版本4.4 - 8.30）需要从PCRE网站下载并解压。其余的工作是Nginx的./ configure和make来完成。正则表达式使用在location指令和 ngx_http_rewrite_module 模块中
+
+    --with-pcre-jit 编译PCRE包含just-in-time compilation”（1.1.12中， pcre_jit指令）
+
+    --with-zlib=PATH 设置的zlib库的源码路径。要下载从 zlib（版本1.1.3 - 1.2.5）的并解压。其余的工作是Nginx的./ configure和make完成。ngx_http_gzip_module模块需要使用zlib 
+
+    --with-cc-opt=parameters
+     设置额外的参数将被添加到CFLAGS变量。例如,当你在FreeBSD上使用PCRE库时需要使用:--with-cc-opt=&amp;quot;-I /usr/local/include。.如需要需要增加 select()支持的文件数量:--with-cc-opt=&amp;quot;-D FD_SETSIZE=2048&amp;quot;
+
+    --with-ld-opt=parameters 设置附加的参数，将用于在链接期间。例如，当在FreeBSD下使用该系统的PCRE库,应指定:--with-ld-opt=&amp;quot;-L /usr/local/lib&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Status API Training Shop Blog About Pricing
+© 2015 GitHub, Inc. Terms Privacy Security Contact Help&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Mysql优化小技巧</title>
+        <link>/2015/06/02/mysql%20-%20optimize.html</link>
+        <guid isPermaLink="true">/2015/06/02/mysql%20-%20optimize.html</guid>
+        <pubDate>Tue, 02 Jun 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;Mysql优化小技巧&lt;/h1&gt;
+
+&lt;h2&gt;索引碎片与维护&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;在长期的数据更新过程中, 索引文件和数据文件,都将产生空洞，形成碎片我们可以通过一个nop操作(不产生对数据实质影响的操作), 来修改表。比如: 表的引擎为InnoDB , 可以 &lt;code&gt;alter table tableName engine InnoDB&lt;/code&gt;也可以&lt;code&gt;optimize table tableName&lt;/code&gt;,也可以修复。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;： 修复表的数据及索引碎片，就会把所有的数据文件重新整理一遍，对于这个过程，如果表的行数比较大，也是非常耗费资源的操作。所以，不能频繁的修复。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;建议&lt;/strong&gt;：如果表的Update操作很频率，可以按 周/月 来修复，如果不频繁，可以更长的周期来做修复&lt;/p&gt;
+
+&lt;h2&gt;重复索引和冗余索引的思考&lt;/h2&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;重复索引:：是指 在同1个列(如name)， 或者 顺序相同的几个列(name,age)， 建立了多个索引。称为重复索引，重复索引没有任何帮助，只会增大索引文件，拖慢更新速度，必须去除。冗余索引：冗余索引是指2个索引所覆盖的列有重叠， 称为冗余索引，比如 x,m列， 加索引  index x(x)，  index xm(x, m)。x、xm索引， 两者的x列重叠了， 这种情况,称为冗余索引，甚至可以把 index mx(m, x) 索引也建立， mx、xm  也不是重复的，列的顺序不一样。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2&gt;in型子查询的陷阱&lt;/h2&gt;
+
+&lt;p&gt;在ecshop商品表中，查询6号栏目的商品（6号是一个大栏目）
+最直观的：&lt;br&gt;
+&lt;code&gt;mysql&amp;gt; select goods_id,cat_id,goods_name from goods where cat_id in (select cat_id from ecs_category where parent_id=6);&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;误区： 给我们的感觉是， 先查到内层的6号栏目的子栏目，如7,8,9,11然后外层，cat&lt;em&gt;id in (7,8,,9,11)
+实际上： 如下图, goods表全扫描， 并逐行与category表对照，看parent&lt;/em&gt;id=6是否成立
+&lt;img src=&quot;http://myyphp.github.io/public/img/posts/mysql_optimize1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://myyphp.github.io/public/img/posts/mysql_optimize2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;原因： mysql的查询优化器，针对In型做优化，被改成了exists的执行效果，当goods表越大时， 查询速度越慢&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;改进： 用连接查询来代替子查询
+   &lt;code&gt;explain select goods_id,g.cat_id,g.goods_name from  goods as g inner join (select cat_id from ecs_category where parent_id=6) as t using(cat_id) \G&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;内层 select cat&lt;em&gt;id from ecs&lt;/em&gt;category where parent&lt;em&gt;id=6 ; 用到Parent&lt;/em&gt;id索引，返回4行，形成结果,设为 t&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;第2次查询， t 和 goods 通过 cat&lt;em&gt;id 相连， 因为cat&lt;/em&gt;id在 goods表中有索引，所以相当于用7,8,911，快速匹配上goods的行。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2&gt;exists子查询&lt;/h2&gt;
+
+&lt;p&gt;题： 查询有商品的栏目.按上面的理解，我们用join来操作，如下：
+    &lt;code&gt;mysql&amp;gt; select c.cat_id, cat_name from ecs_category as c inner join  goods as  g on c.cat_id=g.cat_id group by cat_name;&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;优化1： 在group时， 用带有索引的列来group， 速度会稍快一些,另外，用int型 比 char型分组，也要快一些&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;优化2： 在group时， 我们假设只取了A表的内容，group by 的列，尽量用A表的列，会比B表的列要快&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;优化3： 从语义上去优化&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;code&gt;select cat_id,cat_name from ecs_category where exists(select *from  goods where  goods.cat_id=ecs_category.cat_id)&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2&gt;rom子查询&lt;/h2&gt;
+
+&lt;p&gt;注意：内层from语句查到的临时表，是没有索引的。所以： from的返回内容要尽量少max|min优化技巧&lt;/p&gt;
+
+&lt;p&gt;有如下的地区表：
+&lt;img src=&quot;http://myyphp.github.io/public/img/posts/mysql_optimize3.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;我们查min(id)，id是主键，查min(id)非常快,但是，pid上没有索引， 现在要求查询3113地区的min(id)
+&lt;code&gt;select min(id) from area where pid=69;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;试想 id是有顺序的，(默认索引是升续排列)， 因此,如果我们沿着id的索引方向走，那么 第1个 pid=69的索引结点，他的id就正好是最小的id。
+&lt;code&gt;select  id  from area use index(primary) where pid=69 limit 1;&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2&gt;count() 优化&lt;/h2&gt;
+
+&lt;p&gt;误区： myisam的count()非常快&lt;/p&gt;
+
+&lt;p&gt;答: 是比较快，但仅限于查询表的”所有行”比较快，因为Myisam对行数进行了存储。一旦有条件的查询, 速度就不再快了。尤其是where条件的列上没有索引。&lt;/p&gt;
+
+&lt;p&gt;假如，id&amp;lt;100的商家都是我们内部测试的，我们想查查真实的商家有多少?&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;select count(*) from tableName where id&amp;gt;=100;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;小技巧：&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;select count(*) from tableName ; 快&lt;/code&gt;
+&lt;code&gt;select count(*) from tableName where id &amp;lt; 100; 快&lt;/code&gt;
+&lt;code&gt;select count(*) from tableName - select count(*) from tableName where id&amp;lt;100; 快&lt;/code&gt;
+&lt;code&gt;select (select count(*) from tableName ) - (select count(*) from tableName where id&amp;lt;100)&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2&gt;group小技巧&lt;/h2&gt;
+
+&lt;p&gt;注意：分组用于统计，而不用于筛选数据.&lt;/p&gt;
+
+&lt;p&gt;比如： 统计平均分，最高分，适合； 但用于筛选重复数据，则不适合.。以及用索引来避免临时表和文件排序以A,B表连接为例 ，主要查询A表的列， 那么 &lt;code&gt;group by&lt;/code&gt; ,&lt;code&gt;order by&lt;/code&gt; 的列尽量相同，而且列应该显示声明为A的列&lt;/p&gt;
+
+&lt;h2&gt;union优化&lt;/h2&gt;
+
+&lt;p&gt;注意： &lt;code&gt;union all&lt;/code&gt; 不过滤 效率提高，如非必须，请用&lt;code&gt;union all&lt;/code&gt; ，因为 &lt;code&gt;union&lt;/code&gt;去重的代价非常高，放在PHP程序里去重更合适&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>linux 环境下 php 扩展安装通用方法</title>
+        <link>/2015/05/20/linux-php.html</link>
+        <guid isPermaLink="true">/2015/05/20/linux-php.html</guid>
+        <pubDate>Wed, 20 May 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;linux 环境下 php 扩展安装通用方法&lt;/h1&gt;
+
+&lt;p&gt;(本案例拿 php的mbstring 来做演示)
+1. 首先进入到php源码包中的 ext 目录下 &lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;gt; /usr/local/src/php-5.3.28/ext/mbstring
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在mbstring 目录下(/usr/local/src/php-5.3.28/ext/mbstring 目录下)产生configure文件，执行如下命令&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;/usr/local/php/bin/phpize&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置编译(/usr/local/src/php-5.3.28/ext/mbstring 目录下) &lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;./configure --with-php-config=/usr/local/php/bin/php-config &lt;/p&gt;
+
+&lt;p&gt;make &amp;amp;&amp;amp; make install &lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在执行上面命令后会生成一个目录DIR(/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626)，里面包含 mbstring.so 文件&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;配置 php.ini 文件中的extension_dir=DIR ，然后加入一行  extension=mbstring.so&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;extension_dir=&amp;quot;/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;extension=mbstring.so&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用 phpinfo() 函数测试 &lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;注意：安装php的mcrypt时候出现问题？&lt;/p&gt;
+
+&lt;p&gt;问题描述：在php对mcrypt的扩展时候，出现mcrypt.h not found. Please reinstall libmcrypt&lt;/p&gt;
+
+&lt;p&gt;解决方案：
+- 使用第三方的yum源来解决&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;wget http://www.atomicorp.com/installers/atomic&lt;/p&gt;
+
+&lt;p&gt;sh ./atomic  &lt;/p&gt;
+
+&lt;p&gt;yum  install  php-mcrypt  libmcrypt  libmcrypt-devel&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
+&lt;li&gt;使用php mcrypt 前必须先安装libmcrypt&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;libmcrypt源码安装方法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /usr/local/src&lt;/p&gt;
+
+&lt;p&gt;wget http://softlayer.dl.sourceforge.net/sourceforge/mcrypt/libmcrypt-2.5.8.tar.gz&lt;/p&gt;
+
+&lt;p&gt;tar -zxvf libmcrypt-2.5.8.tar.gz&lt;/p&gt;
+
+&lt;p&gt;cd /usr/local/src/libmcrypt-2.5.8&lt;/p&gt;
+
+&lt;p&gt;./configure --prefix=/usr/local&lt;/p&gt;
+
+&lt;p&gt;make&lt;/p&gt;
+
+&lt;p&gt;make install&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Mysql索引文件本身的数据结构</title>
+        <link>/2015/05/02/mysql-index%20.html</link>
+        <guid isPermaLink="true">/2015/05/02/mysql-index%20.html</guid>
+        <pubDate>Sat, 02 May 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;Mysql索引文件本身的数据结构&lt;/h1&gt;
+
+&lt;h2&gt;1、问题：索引本身是一种数据，也是需要一定的格式来存储到磁盘上的&lt;/h2&gt;
+
+&lt;p&gt;索引文件如何存储呢？
+不同的索引文件，存储的结构不一样，对于 MyiSam 和 Innodb 的索引文件，分别如下：
+1. &lt;code&gt;MyiSam&lt;/code&gt; 存储引擎的索引结构是：B-tree（balance tree）
+2. &lt;code&gt;Innodb&lt;/code&gt; 存储引擎的索引结构是：聚簇索引&lt;/p&gt;
+
+&lt;h2&gt;2、什么是B-tree索引&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://myyphp.github.io/public/img/posts/mysql_index1.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;3、什么是聚簇索引&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://myyphp.github.io/public/img/posts/mysql_index2.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;4、几点说明&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;可以看出 MyiSam存储引擎 的结构在 维护方面 更具优势，因为 Innodb的存储引擎的结构里的 索引值下面包含了该行记录，索引开销很大；但是在查询方面却有着 无可比拟的性能，不需要做回行处理（读取磁盘文件）&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;如果项目不要使用事务可以有限考虑 MyiSam存储引擎来处理，具有更高效的维护更本&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在存在主键ID时，在批量插入数据的时候，MyiSam存储引擎，索引列不会进行排序，直接插入；但Innodb存储引擎会在排序后再插入，故会影响性能&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2&gt;5、测试&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;创建 &lt;code&gt;myisam&lt;/code&gt; 的表&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;CREATE TABLE my_isam (&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;       id int(11) NOT NULL DEFAULT &amp;#39;0&amp;#39;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;       name varchar(20) DEFAULT NULL,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;       address varchar(30) DEFAULT NULL,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;           PRIMARY KEY (id)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;创建 innodb 的表&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;CREATE TABLE `in_nodb` (&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;          id int(11) NOT NULL DEFAULT &amp;#39;0&amp;#39;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;          name varchar(20) DEFAULT NULL,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;          address varchar(30) DEFAULT NULL,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;          PRIMARY KEY (id)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;添加数据测试&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code&gt;myisam&lt;/code&gt;存储引擎：&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;insert into  my_isam(id,name,address)  values(8, &amp;#39;jkeyll&amp;#39;, &amp;#39;shenzhen&amp;#39;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    insert into  my_isam(id,name,address)  values(10, &amp;#39;keyll&amp;#39;, &amp;#39;shenzhen&amp;#39;); &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    insert into  my_isam(id,name,address) values(3,&amp;#39;tony&amp;#39;,&amp;#39;hangzhou&amp;#39;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    insert into  my_isam(id,name,address) values(2,&amp;#39;andy&amp;#39;,&amp;#39;zhenzhou&amp;#39;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;innodb&lt;/code&gt;存储引擎：&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;insert into  in_nodb(id,name,address)  values(8, &amp;#39;jkeyll&amp;#39;, &amp;#39;shenzhen&amp;#39;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    insert into  in_nodb(id,name,address)  values(10, &amp;#39;keyll&amp;#39;, &amp;#39;shenzhen&amp;#39;); &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    insert into  in_nodb(id,name,address) values(3,&amp;#39;tony&amp;#39;,&amp;#39;hangzhou&amp;#39;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    insert into  in_nodb(id,name,address) values(2,&amp;#39;andy&amp;#39;,&amp;#39;zhenzhou&amp;#39;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;对比：通过测试数据可以看出，在&lt;code&gt;myisam&lt;/code&gt;存储引擎在批量插入数据的时候，不会做排序处理，而&lt;code&gt;innodb&lt;/code&gt;则会先排序在处理&lt;/strong&gt;&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Git常用命令速查表</title>
+        <link>/2015/03/10/Git-Resources.html</link>
+        <guid isPermaLink="true">/2015/03/10/Git-Resources.html</guid>
+        <pubDate>Tue, 10 Mar 2015 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;master: 默认开发分支&lt;/p&gt;
+
+&lt;p&gt;origin: 默认远程版本库&lt;/p&gt;
+
+&lt;p&gt;Head: 默认开发分支&lt;/p&gt;
+
+&lt;p&gt;Head^: Head的父提交&lt;/p&gt;
+
+&lt;h3&gt;创建版本库&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git clone &amp;lt;url&amp;gt;   #克隆远程版本库
+$ git init          #初始化本地版本库
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;修改和提交&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git status        #查看状态
+$ git diff          #查看变更内容
+$ git add .         #跟踪所有改动过的文件
+$ git add &amp;lt;file&amp;gt;    #跟踪指定的文件
+$ git mv &amp;lt;old&amp;gt;&amp;lt;new&amp;gt; #文件改名
+$ git rm&amp;lt;file&amp;gt;      #删除文件
+$ git rm --cached&amp;lt;file&amp;gt;            #停止跟踪文件但不删除
+$ git commit -m &amp;quot;commit messages&amp;quot;  #提交所有更新过的文件
+$ git commit --amend               #修改最后一次改动
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;查看提交历史&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git log                    #查看提交历史
+$ git log -p &amp;lt;file&amp;gt;          #查看指定文件的提交历史
+$ git blame &amp;lt;file&amp;gt;           #以列表方式查看指定文件的提交历史
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;撤销&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git reset --hard HEAD      #撤销工作目录中所有未提交文件的修改内容
+$ git checkout HEAD &amp;lt;file&amp;gt;   #撤销指定的未提交文件的修改内容
+$ git revert &amp;lt;commit&amp;gt;        #撤销指定的提交
+$ git log --before=&amp;quot;1 days&amp;quot;  #退回到之前1天的版本 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;分支与标签&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git branch                   #显示所有本地分支
+$ git checkout &amp;lt;branch/tag&amp;gt;    #切换到指定分支和标签
+$ git branch &amp;lt;new-branch&amp;gt;      #创建新分支
+$ git branch -d &amp;lt;branch&amp;gt;       #删除本地分支
+$ git tag                      #列出所有本地标签
+$ git tag &amp;lt;tagname&amp;gt;            #基于最新提交创建标签
+$ git tag -d &amp;lt;tagname&amp;gt;         #删除标签
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;合并与衍合&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git merge &amp;lt;branch&amp;gt;        #合并指定分支到当前分支
+$ git rebase &amp;lt;branch&amp;gt;       #衍合指定分支到当前分支
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;远程操作&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ git remote -v                   #查看远程版本库信息
+$ git remote show &amp;lt;remote&amp;gt;        #查看指定远程版本库信息
+$ git remote add &amp;lt;remote&amp;gt; &amp;lt;url&amp;gt;   #添加远程版本库
+$ git fetch &amp;lt;remote&amp;gt;              #从远程库获取代码
+$ git pull &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;      #下载代码及快速合并
+$ git push &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;      #上传代码及快速合并
+$ git push &amp;lt;remote&amp;gt; :&amp;lt;branch/tag-name&amp;gt;  #删除远程分支或标签
+$ git push --tags                       #上传所有标签
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;资料链接&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;https://try.github.io/levels/1/challenges/1&quot;&gt;Try Git&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      </item>
+    
+      <item>
         <title>php文件上传</title>
-        <link>/2014/05/01/files-upload.html</link>
-        <guid isPermaLink="true">/2014/05/01/files-upload.html</guid>
-        <pubDate>Thu, 01 May 2014 00:00:00 +0800</pubDate>
+        <link>/2015/03/01/files-upload.html</link>
+        <guid isPermaLink="true">/2015/03/01/files-upload.html</guid>
+        <pubDate>Sun, 01 Mar 2015 00:00:00 +0800</pubDate>
         <description>&lt;h3&gt;什么是文件上传&lt;/h3&gt;
 
 &lt;p&gt;把&lt;code&gt;浏览器&lt;/code&gt;所在电脑的文件存放到&lt;code&gt;服务器&lt;/code&gt;上, 这个过程称之为文件上传&lt;/p&gt;
@@ -751,9 +1341,14 @@ Are you sure you want to &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt; c
 &lt;li&gt;&lt;p&gt;设置上传文件的临时存放目录&lt;/p&gt;
 
 &lt;p&gt;upload&lt;em&gt;tmp&lt;/em&gt;dir =&amp;quot;E:\PHP\upload&amp;quot;  #;设置文件上传临时保存路径,默认是在c:/windows/temp&lt;/p&gt;&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;设置文件表单域&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;设置文件表单域&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;&lt;input type=’file’ name=’myfile’&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;input type=’file’ name=’myfile’&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ul&gt;
 &lt;li&gt;&lt;p&gt;设置post提交二进制&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;enctype=”multipart/form-data”&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;

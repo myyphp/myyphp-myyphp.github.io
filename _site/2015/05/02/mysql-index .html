@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>Mysql索引文件本身的数据结构 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,97 +276,80 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">Mysql索引文件本身的数据结构</h2>
+    2015年05月02日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
+      <h1>Mysql索引文件本身的数据结构</h1>
 
-<h2>防盗链怎么做？</h2>
+<h2>1、问题：索引本身是一种数据，也是需要一定的格式来存储到磁盘上的</h2>
 
-<blockquote>
+<p>索引文件如何存储呢？
+不同的索引文件，存储的结构不一样，对于 MyiSam 和 Innodb 的索引文件，分别如下：
+1. <code>MyiSam</code> 存储引擎的索引结构是：B-tree（balance tree）
+2. <code>Innodb</code> 存储引擎的索引结构是：聚簇索引</p>
+
+<h2>2、什么是B-tree索引</h2>
+
+<p><img src="http://myyphp.github.io/public/img/posts/mysql_index1.png" alt=""></p>
+
+<h2>3、什么是聚簇索引</h2>
+
+<p><img src="http://myyphp.github.io/public/img/posts/mysql_index2.png" alt=""></p>
+
+<h2>4、几点说明</h2>
+
 <ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
+<li><p>可以看出 MyiSam存储引擎 的结构在 维护方面 更具优势，因为 Innodb的存储引擎的结构里的 索引值下面包含了该行记录，索引开销很大；但是在查询方面却有着 无可比拟的性能，不需要做回行处理（读取磁盘文件）</p></li>
+<li><p>如果项目不要使用事务可以有限考虑 MyiSam存储引擎来处理，具有更高效的维护更本</p></li>
+<li><p>在存在主键ID时，在批量插入数据的时候，MyiSam存储引擎，索引列不会进行排序，直接插入；但Innodb存储引擎会在排序后再插入，故会影响性能</p></li>
 </ul>
-</blockquote>
 
-<h2>怎么应对网站高并发？</h2>
-
-<blockquote>
-<p>主要处理方式就是分流。</p>
-
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<h2>5、测试</h2>
 
 <ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
+<li>创建 <code>myisam</code> 的表</li>
 </ul>
-</blockquote>
 
-<h2>大流量（访问网站的量）解决方案？</h2>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="x">CREATE TABLE my_isam (</span>
+<span class="lineno">2</span> <span class="x">       id int(11) NOT NULL DEFAULT &#39;0&#39;,</span>
+<span class="lineno">3</span> <span class="x">       name varchar(20) DEFAULT NULL,</span>
+<span class="lineno">4</span> <span class="x">       address varchar(30) DEFAULT NULL,</span>
+<span class="lineno">5</span> <span class="x">           PRIMARY KEY (id)</span>
+<span class="lineno">6</span> <span class="x">  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;</span></code></pre></div>
 
-<blockquote>
 <ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
+<li>创建 innodb 的表</li>
 </ul>
-</blockquote>
 
-<h2>大存储的解决方式？</h2>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="x">CREATE TABLE `in_nodb` (</span>
+<span class="lineno">2</span> <span class="x">          id int(11) NOT NULL DEFAULT &#39;0&#39;,</span>
+<span class="lineno">3</span> <span class="x">          name varchar(20) DEFAULT NULL,</span>
+<span class="lineno">4</span> <span class="x">          address varchar(30) DEFAULT NULL,</span>
+<span class="lineno">5</span> <span class="x">          PRIMARY KEY (id)</span>
+<span class="lineno">6</span> <span class="x">  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;</span></code></pre></div>
 
-<blockquote>
 <ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
+<li>添加数据测试</li>
 </ul>
-</blockquote>
 
-<h2>怎么配置MPM？？？</h2>
+<p><code>myisam</code>存储引擎：</p>
 
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="x">insert into  my_isam(id,name,address)  values(8, &#39;jkeyll&#39;, &#39;shenzhen&#39;);</span>
+<span class="lineno">2</span> <span class="x">    insert into  my_isam(id,name,address)  values(10, &#39;keyll&#39;, &#39;shenzhen&#39;); </span>
+<span class="lineno">3</span> <span class="x">    insert into  my_isam(id,name,address) values(3,&#39;tony&#39;,&#39;hangzhou&#39;);</span>
+<span class="lineno">4</span> <span class="x">    insert into  my_isam(id,name,address) values(2,&#39;andy&#39;,&#39;zhenzhou&#39;);</span></code></pre></div>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
+<p><code>innodb</code>存储引擎：</p>
 
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
+<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="x">insert into  in_nodb(id,name,address)  values(8, &#39;jkeyll&#39;, &#39;shenzhen&#39;);</span>
+<span class="lineno">2</span> <span class="x">    insert into  in_nodb(id,name,address)  values(10, &#39;keyll&#39;, &#39;shenzhen&#39;); </span>
+<span class="lineno">3</span> <span class="x">    insert into  in_nodb(id,name,address) values(3,&#39;tony&#39;,&#39;hangzhou&#39;);</span>
+<span class="lineno">4</span> <span class="x">    insert into  in_nodb(id,name,address) values(2,&#39;andy&#39;,&#39;zhenzhou&#39;);</span></code></pre></div>
 
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
-<ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
-</ul>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
+<p><strong>对比：通过测试数据可以看出，在<code>myisam</code>存储引擎在批量插入数据的时候，不会做排序处理，而<code>innodb</code>则会先排序在处理</strong></p>
 
     </div>
     <hr>

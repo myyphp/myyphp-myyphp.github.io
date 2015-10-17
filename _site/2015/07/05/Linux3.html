@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>Linux 3：文件与目录管理 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,97 +276,150 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">Linux 3：文件与目录管理</h2>
+    2015年07月05日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
-
-<h2>防盗链怎么做？</h2>
-
-<blockquote>
+      <h3>目录的相关操作</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">.         # 代表此层目录
+..        # 代表上一层目录
+-         # 代表前一个工作目录
+~         # 代表『目前使用者身份』所在的家目录
+~account  # 代表 account 这个使用者的家目录(account是个帐号名称)
+</code></pre></div>
 <ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
+<li>在所有目录底下都会存在的两个目录，分别是<code>.</code>与<code>..</code></li>
+<li>根目录的上一层<code>(..)</code>与根目录自己<code>(.)</code>是同一个目录</li>
 </ul>
-</blockquote>
 
-<h2>怎么应对网站高并发？</h2>
-
-<blockquote>
-<p>主要处理方式就是分流。</p>
-
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<h4>几个常见的处理目录的命令</h4>
 
 <ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
+<li>cd：变换目录，cd是Change Directory的缩写</li>
+<li>pwd：显示目前的目录，pwd是Print Working Directory的缩写</li>
+<li>mkdir：创建一个新的目录</li>
+<li>rmdir：删除一个空的目录</li>
+<li>mv：移动文件</li>
 </ul>
-</blockquote>
+<div class="highlight"><pre><code class="language-text" data-lang="text">pwd -P                   # -P：代表显示正确的完整路径，而不是连接路径
+mkdir -m xxx             # -m：直接配置文件的权限
+mkdir -p test1/test2     # -p：直接将所需要的目录(包含上一级目录)递回创建起来！
+PATH=&quot;$PATH&quot;:/root       # 将/root路径加入PATH环境变量中
+</code></pre></div>
+<h3>文件与目录管理</h3>
 
-<h2>大流量（访问网站的量）解决方案？</h2>
-
-<blockquote>
 <ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
+<li>文件与目录的检视： ls</li>
+<li>复制、删除与移动： cp, rm, mv</li>
 </ul>
-</blockquote>
+<div class="highlight"><pre><code class="language-text" data-lang="text">cp -a        # 将文件的所有特性都一起复制过来
+cp -p        # 连同文件的属性一起复制过去，而非使用默认属性(备份常用)
+cp -r        # 可以复制目录，但是，文件与目录的权限可能会被改变
+rm -i        # 互动模式，在删除前会询问使用者是否动作
+rm -r        # 连目录下的东西一起删掉，并且不会询问，慎用
+mv -f        # force强制移动，如果目标文件已经存在，不会询问而直接覆盖
+mv -i        # 若目标文件 (destination) 已经存在时，就会询问是否覆盖
+</code></pre></div>
+<h3>文件内容查询</h3>
 
-<h2>大存储的解决方式？</h2>
-
-<blockquote>
 <ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
+<li>直接检视文件内容： cat, tac, nl （常用）</li>
+<li>可翻页检视： more, less （常用）</li>
+<li>数据撷取： head, tail</li>
+<li>非纯文字档： od</li>
+<li>修改文件时间与建置新档： touch</li>
 </ul>
-</blockquote>
+<div class="highlight"><pre><code class="language-text" data-lang="text">cat [-AbEnTv] filename # 由第一行开始显示文件内容。-b列出非空白行行号；-n列出所有行号。
+tac                    # 从最后一行开始显示文件内容，tac就是cat倒着写！
+nl                     # 显示文件内容，顺便输出行号
+more                   # 一页一页地显示文件内容
+less                   # 与more类似，但可以往前翻页
+head [-n number]       # 只看文件头几行，默认是10行，number是自定义行数
+tail                   # 只看文件尾几行，文件很大的时候常用
+od                     # 以二进制方式读取文件内容
+</code></pre></div>
+<h3>文件与目录的默认权限与隐藏权限</h3>
 
-<h2>怎么配置MPM？？？</h2>
-
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
 <ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
+<li>文件默认权限：umask</li>
+<li>文件隐藏属性： chattr, lsattr</li>
+<li>文件特殊权限：SUID, SGID, SBIT, 权限配置</li>
+<li>观察文件类型：file</li>
 </ul>
-</blockquote>
+<div class="highlight"><pre><code class="language-text" data-lang="text">umask           # 后三位数是被拿走的权限分数，比如0022，u没有被拿走权限，g和o被拿走了w权限
+umask -S        # 以符号类型来显示权限
+umask number    # 配置自己需要的权限
+</code></pre></div>
+<p>在默认的情况中，root的umask会拿掉比较多的属性，root的umask默认是<code>022</code>， 这是基於安全的考量啦～至於一般身份使用者，通常他们的 umask 为<code>002</code> ，亦即保留同群组的写入权力。</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
+<ul>
+<li>特殊权限<code>s</code>和<code>t</code></li>
+<li>Set UID，简称SUID，当s标志在文件拥有者的x项目为SUID，对目录无效</li>
+<li>Set GID，简称SGID，当s标志在群组的x项目为SGID，对目录有效</li>
+<li>Sticky Bit, 简称SBIT，目前只针对目录有效，对於文件已经没有效果了</li>
+</ul>
 
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
+<h3>配置SUID,SGID,SBIT权限</h3>
+
+<p>在原有的权限数字前面加上需要配置的权限数字。
+比如<code>755</code>-&gt;<code>4755</code> ，就意味着<code>-rwxr-xr-x</code>变为了<code>-rwsr-xr-x</code>。</p>
+
+<ul>
+<li>4 为 SUID</li>
+<li>2 为 SGID</li>
+<li>1 为 SBIT</li>
+</ul>
+<div class="highlight"><pre><code class="language-text" data-lang="text">chmod 4755 filename
+chmod u=rwxs,go=x test; ls -l test      # 配置权限为-rws--x--x的模样
+chmod g+s,o+t test; ls -l test          # 配置权限为-rws--s--t，即加入SGID,SBIT权限
+</code></pre></div>
+<h3>命令与文件的搜寻</h3>
+
+<ul>
+<li>命令档名的搜寻：which</li>
+<li>文件档名的搜寻：whereis, locate, find</li>
+</ul>
+
+<h3>权限与命令的关系</h3>
+
+<h4>一、让使用者能进入某目录成为『可工作目录』的基本权限为何：</h4>
+
+<ul>
+<li>可使用的命令：例如 cd 等变换工作目录的命令；</li>
+<li>目录所需权限：使用者对这个目录至少需要具有 x 的权限</li>
+<li>额外需求：如果使用者想要在这个目录内利用 ls 查阅档名，则使用者对此目录还需要 r 的权限。</li>
+</ul>
+
+<h4>二、使用者在某个目录内读取一个文件的基本权限为何？</h4>
+
+<ul>
+<li>可使用的命令：例如本章谈到的 cat, more, less等等</li>
+<li>目录所需权限：使用者对这个目录至少需要具有 x 权限；</li>
+<li>文件所需权限：使用者对文件至少需要具有 r 的权限才行！</li>
+</ul>
+
+<h4>三、让使用者可以修改一个文件的基本权限为何？</h4>
+
+<ul>
+<li>可使用的命令：例如 nano 或未来要介绍的 vi 编辑器等；</li>
+<li>目录所需权限：使用者在该文件所在的目录至少要有 x 权限；</li>
+<li>文件所需权限：使用者对该文件至少要有 r, w 权限</li>
+</ul>
+
+<h4>四、让一个使用者可以创建一个文件的基本权限为何？</h4>
+
+<ul>
+<li>目录所需权限：使用者在该目录要具有 w,x 的权限，重点在 w 啦！</li>
+</ul>
+
+<h4>五、让使用者进入某目录并运行该目录下的某个命令之基本权限为何？</h4>
+
+<ul>
+<li>目录所需权限：使用者在该目录至少要有 x 的权限；</li>
+<li>文件所需权限：使用者在该文件至少需要有 x 的权限</li>
+</ul>
 
     </div>
     <hr>

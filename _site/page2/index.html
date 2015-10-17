@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>首页 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,97 +276,93 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier"><i class="fa fa-home fa-lg"></i></h2>
   </div>
   <div class="col-md-13 aside3-content">
-    <hr>
-    <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
-
-<h2>防盗链怎么做？</h2>
-
-<blockquote>
-<ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
-</ul>
-</blockquote>
-
-<h2>怎么应对网站高并发？</h2>
-
-<blockquote>
-<p>主要处理方式就是分流。</p>
-
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
-
-<ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
-</ul>
-</blockquote>
-
-<h2>大流量（访问网站的量）解决方案？</h2>
-
-<blockquote>
-<ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
-</ul>
-</blockquote>
-
-<h2>大存储的解决方式？</h2>
-
-<blockquote>
-<ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
-</ul>
-</blockquote>
-
-<h2>怎么配置MPM？？？</h2>
-
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
-<ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
-</ul>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
+    <div id="page-content">
+      <!--<br>--> 
+<center><h3><font color="#000080">洛</font><font color="#FFA500">阳</font><font color="#2E8B57">亲</font><font color="#F08080">友</font><font color="#00CED1">如</font><font color="red">相</font><font color="#BA55D3">问, </font><font color="#601986">就</font><font color="#556fb5">说</font><font color="#fa1089">我</font><font color="#638c0b">在</font><font color="#e00089">敲</font><font color="#0a1089">代</font><font color="#f0c089">码</font><font color="#00c380">！</font><font color="#cc1089"></font></h3></center>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">最新文章</div>
+      
+        <a  href='/2015/06/02/mysql%20-%20optimize.html' class="list-group-item pjaxlink clearfix">
+          Mysql优化小技巧
+          <span class="badge">2015年06月02日</span>
+        </a>
+      
+        <a  href='/2015/05/20/linux-php.html' class="list-group-item pjaxlink clearfix">
+          linux 环境下 php 扩展安装通用方法
+          <span class="badge">2015年05月20日</span>
+        </a>
+      
+        <a  href='/2015/05/02/mysql-index%20.html' class="list-group-item pjaxlink clearfix">
+          Mysql索引文件本身的数据结构
+          <span class="badge">2015年05月02日</span>
+        </a>
+      
+        <a  href='/2015/03/10/Git-Resources.html' class="list-group-item pjaxlink clearfix">
+          Git常用命令速查表
+          <span class="badge">2015年03月10日</span>
+        </a>
+      
+        <a  href='/2015/03/01/files-upload.html' class="list-group-item pjaxlink clearfix">
+          php文件上传
+          <span class="badge">2015年03月01日</span>
+        </a>
+      
+    </div>
+  </div>
+  
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Optimization</div>
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+        
+      </div>
+    </div>
+  
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">LaTeX</div>
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+         
+          
+        
+      </div>
+    </div>
+  
+</div>
+ 
 
     </div>
     <hr>
@@ -377,14 +373,7 @@
 </div>
 
   </div>
-  <!-- 目录 -->
-  <div id="content_table" style="position:fixed;right:20px;top:120px;display:none;">
-    <div class="panel panel-success">
-      <div class="panel-body" id="nav"></div>
-    </div>
-  </div>
 </div>
-
 
           </div>
         </div>

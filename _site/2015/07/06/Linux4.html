@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>Linux 4：磁盘与文件系统管理 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,97 +276,82 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">Linux 4：磁盘与文件系统管理</h2>
+    2015年07月06日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
+      <h3>认识EXT2文件系统</h3>
 
-<h2>防盗链怎么做？</h2>
+<p>每种操作系统能够使用的文件系统并不相同。 举例来说，windows 98以前的微软操作系统主要利用的文件系统是<code>FAT(或FAT16)</code>，windows 2000以后的版本有所谓的<code>NTFS</code>文件系统，至于Linux的正统文件系统则为<code>Ext2</code>(Linux second extended file system, ext2fs)这一个。此外，在默认的情况下，windows操作系统是不会认识Linux的Ext2的。</p>
 
-<blockquote>
-<ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
-</ul>
-</blockquote>
+<p>那么文件系统是如何运行的呢？这与操作系统的文件数据有关。较新的操作系统的文件数据除了文件实际内容外，通常含有非常多的属性，例如Linux操作系统的文件权限(rwx)与文件属性(拥有者、群组、时间参数等)。 文件系统通常会将这两部份的数据分别存放在不同的区块，权限与属性放置到<code>inode</code>中，至于实际数据则放置到<code>data block</code>区块中。 另外，还有一个超级区块(<code>superblock</code>)会记录整个文件系统的整体信息，包括inode与block的总量、使用量、剩余量等。</p>
 
-<h2>怎么应对网站高并发？</h2>
+<h3>文件系统的简单操作</h3>
 
-<blockquote>
-<p>主要处理方式就是分流。</p>
-
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<h3>磁盘的分割、格式化、检验与挂载</h3>
 
 <ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
+<li>磁盘分区： fdisk, partprobe</li>
+<li>磁盘格式化： mkfs, mke2fs</li>
+<li>磁盘检验： fsck, badblocks</li>
+<li>磁盘挂载与卸除： mount, umount</li>
+<li>磁盘参数修订： mknod, e2label, tune2fs, hdparm</li>
 </ul>
-</blockquote>
 
-<h2>大流量（访问网站的量）解决方案？</h2>
+<h3>配置启动挂载</h3>
 
-<blockquote>
 <ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
+<li>启动挂载 /etc/fstab 及 /etc/mtab</li>
+<li>特殊装置 loop 挂载(映象档不刻录就挂载使用)</li>
 </ul>
-</blockquote>
 
-<h2>大存储的解决方式？</h2>
+<h3>内存置换空间(swap)之建置</h3>
 
-<blockquote>
 <ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
+<li>使用实体分割槽建置swap</li>
+<li>使用文件建置swap</li>
+<li>swap使用上的限制</li>
 </ul>
-</blockquote>
 
-<h2>怎么配置MPM？？？</h2>
+<h3>文件系统的特殊观察与操作</h3>
 
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
 <ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
+<li>boot sector 与 superblock 的关系</li>
+<li>磁盘空间之浪费问题</li>
+<li>利用 GNU 的 parted 进行分割行为</li>
 </ul>
-</blockquote>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
+<h3>重点回顾</h3>
 
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
+<ul>
+<li><p>基本上 Linux 的正统文件系统为 Ext2 ，该文件系统内的信息主要有：</p>
+
+<ul>
+<li>superblock：记录此 filesystem 的整体信息，包括inode/block的总量、使用量、剩余量， 以及文件系统的格式与相关信息等；</li>
+<li>inode：记录文件的属性，一个文件占用一个inode，同时记录此文件的数据所在的 block 号码；</li>
+<li>block：实际记录文件的内容，若文件太大时，会占用多个 block 。</li>
+</ul></li>
+<li><p>Ext2 文件系统的数据存取为索引式文件系统(indexed allocation)</p></li>
+<li><p>需要碎片整理的原因就是文件写入的 block 太过于离散了，此时文件读取的效能将会变的很差所致。 这个时候可以透过碎片整理将同一个文件所属的 blocks 汇整在一起。</p></li>
+<li><p>Ext2文件系统主要有：boot sector, superblock, inode bitmap, block bitmap, inode table, data block 等六大部分。</p></li>
+<li><p>data block 是用来放置文件内容数据地方，在 Ext2 文件系统中所支持的 block 大小有 1K, 2K 及 4K 三种而已</p></li>
+<li><p>inode 记录文件的属性/权限等数据，其他重要项目为： 每个 inode 大小均固定为 128 bytes； 每个文件都仅会占用一个 inode 而已； 因此文件系统能够创建的文件数量与 inode 的数量有关；</p></li>
+<li><p>文件的 block 在记录文件的实际数据，目录的 block 则在记录该目录底下文件名与其 inode 号码的对照表；</p></li>
+<li><p>日志式文件系统 (journal) 会多出一块记录区，随时记载文件系统的主要活动，可加快系统复原时间；</p></li>
+<li><p>Linux 文件系统为添加效能，会让主存储器作为大量的磁盘高速缓存；</p></li>
+<li><p>实体链接只是多了一个文件名对该 inode 号码的链接而已；</p></li>
+<li><p>符号链接就类似Windows的快捷方式功能。</p></li>
+<li><p>磁盘的使用必需要经过：分割、格式化与挂载，分别惯用的命令为：fdisk, mkfs, mount三个命令</p></li>
+<li><p>启动自动挂载可参考/etc/fstab之配置，配置完毕务必使用 mount -a 测试语法正确否；</p></li>
+</ul>
+
+<h3>参考资料</h3>
+
+<ul>
+<li><a href="http://vbird.dic.ksu.edu.tw/linux_basic/0230filesystem.php#harddisk">鸟哥的Linux私房菜 第八章</a></li>
+</ul>
 
     </div>
     <hr>

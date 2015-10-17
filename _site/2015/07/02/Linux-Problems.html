@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>Linux 0：实际问题 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,96 +276,86 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">Linux 0：实际问题</h2>
+    2015年07月02日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
-
-<h2>防盗链怎么做？</h2>
-
-<blockquote>
-<ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
+      <ul>
+<li><a href="http://book.douban.com/subject/4889838/">《鸟哥的Linux私房菜——基础学习篇》</a></li>
+<li><a href="http://book.douban.com/subject/2338464/">《鸟哥的Linux私房菜——服务器架设篇》</a></li>
 </ul>
-</blockquote>
 
-<h2>怎么应对网站高并发？</h2>
-
-<blockquote>
-<p>主要处理方式就是分流。</p>
-
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<p>本系列文章分为两部分：</p>
 
 <ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
+<li>系统学习上面两本书的笔记。</li>
+<li>实际中遇到的问题及解决方案，即本文内容。</li>
 </ul>
-</blockquote>
 
-<h2>大流量（访问网站的量）解决方案？</h2>
+<h2>实际问题</h2>
 
-<blockquote>
+<h2>1. 建立网络映射</h2>
+
 <ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
+<li>Mac：<code>Finder</code>-&gt;<code>前往</code>-&gt;<code>连接服务器</code>-&gt;输入<code>smb://IPaddress/samba</code>-&gt;<code>连接</code></li>
+<li>Linux：<code>位置</code>-&gt;<code>连接服务器</code>-&gt;“服务类型”选择<code>自定义位置</code>-&gt;输入<code>smb://IPaddress/samba</code>-&gt;<code>连接</code></li>
 </ul>
-</blockquote>
 
-<h2>大存储的解决方式？</h2>
+<h2>2. ssh登陆失败</h2>
 
-<blockquote>
+<p>以root身份远程登陆服务器，密码正确，却显示如下警告：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now <span class="o">(</span>man-in-the-middle attack<span class="o">)</span>!
+It is also possible that a host key has just been changed.
+The fingerprint <span class="k">for</span> the RSA key sent by the remote host is
+3a:17:4b:6e:62:e6:94:df:09:78:99:90:51:68:18:62.
+Please contact your system administrator.
+Add correct host key in /Users/AnyaLin/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /Users/AnyaLin/.ssh/known_hosts:4
+RSA host key <span class="k">for</span> 222.195.93.129 has changed and you have requested strict checking.
+Host key verification failed.
+</code></pre></div>
+<p>解决方法：</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">vi ~/.ssh/known_hosts     <span class="c">#选中最后一条登陆记录，双击`d`删除，按“：”进入末行编辑模式，输入“x”，回车</span>
+ssh root@222.195.93.129   <span class="c">#再次登陆</span>
+The authenticity of host <span class="s1">&#39;222.195.93.129 (222.195.93.129)&#39;</span> can<span class="err">&#39;</span>t be established.
+RSA key fingerprint is 3a:17:4b:6e:62:e6:94:df:09:78:99:90:51:68:18:62.
+Are you sure you want to <span class="k">continue</span> connecting <span class="o">(</span>yes/no<span class="o">)</span>?    <span class="c">#输入yes</span>
+</code></pre></div>
+<h2>3. tar.gz 文件解压</h2>
+
 <ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
+<li>打开终端</li>
+<li>进入需要解压的xxxx.tar.gz文件所在目录</li>
+<li>$ tar xvfz xxxx.tar.gz</li>
 </ul>
-</blockquote>
 
-<h2>怎么配置MPM？？？</h2>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
 
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
+<h2>4. 新建文件命令</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text">touch a.txt
+</code></pre></div>
+<p>=======</p>
 
 <blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
 <blockquote>
-<ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
-</ul>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
-
 <blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>cc60f2ed32a5f9727a68a2eb7f2f6a8a1eeac51a</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
 </blockquote>
 
     </div>

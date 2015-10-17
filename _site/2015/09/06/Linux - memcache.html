@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>高并发 | 圣泉山人—随记</title>
+<title>memcache实现高可用方案 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -276,97 +276,61 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">高并发</h2>
-    2015年08月03日
+    <h2 id="#identifier">memcache实现高可用方案</h2>
+    2015年09月06日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>大型网站，比如门户网站，在面对大量用户访问、高并发请求方面，基本的解决方案集中在这样几个环节：使用高性能的服务器、高性能的数据库、高效率的编程语言、还有高性能的Web容器。这几个解决思路在一定程度上意味着更大的投入。</p>
+      <h1>memcache实现高可用方案</h1>
 
-<h2>防盗链怎么做？</h2>
+<p>源码：<a href="http://yunpan.cn/cHqfqdQagStBV">http://yunpan.cn/cHqfqdQagStBV</a>  访问密码 cb6f</p>
 
-<blockquote>
+<p><strong>实现方案</strong>：使用<code>repcached</code>实现高可用<br/>
+repcached：全称 replication cached是由日本人发明的memcached的高可用性技术，简称<code>复制缓冲区技术</code></p>
+
+<p><strong>使用场景</strong>：它是一个<strong>单master</strong> <strong>单slave</strong>的方案，但它的 master/slave都是可读写的，而且可以相互同步，如果 master 宕机， slave侦测后，它会自动 listen成为 master；而如果 slave坏掉， master也会侦测到连接断，它就会重新 listen等待新的 slave加入。</p>
+
+<p><strong>实现步骤</strong>：</p>
+
+<ol>
+<li><p>环境搭建
+<code>&gt; yum -y install gcc gcc-c++ libevent-devel</code></p></li>
+<li><p>下载 memcached-1.2.8-repcached-2.2.tar.gz
+<code>&gt; wget http://downloads.sourceforge.net/repcached/memcached-1.2.8-repcached-2.2.tar.gz</code></p></li>
+<li><p>解压配置repcached
+<code>&gt; tar zxvf memcached-1.2.8-repcached-2.2.tar.gz</code>
+<code>&gt; ./configure --enable-replication --program-transform-name=s/memcached/repcached/</code></p></li>
+<li><p>编译安装 
+<code>&gt; make &amp;&amp; make install</code></p></li>
+<li><p>启动repcached (<strong>注意不要使用 root 来启动服务</strong>)</p>
+
 <ul>
-<li><p>非技术手段 ： 给图片添加水印logo</p></li>
-<li><p>技术手段   ： 利用重写规则。判断请求头里面的referer是否含有本网站域名，如果没有则禁止访问或者重写成其他地址。但是还是可以用curl伪装curl。</p></li>
-</ul>
-</blockquote>
+<li>启动主服务
+<code>&gt;  /usr/local/bin/repcached -p 11211 -v -d</code></li>
+<li>启动从服务
+<code>&gt;  /usr/local/bin/repcached -p 11212 -x localhost -v -d</code></li>
+<li>注意：可以使用 <code>ps aux | grep repcached</code>  命令来查看进程</li>
+</ul></li>
+<li><p>参数解释
+-d ： 后台运行memcached进程
+-p ： 默认监听端口11211  11212
+-x ： 监听高可用机器，如果是监听默认端口不用写端口号，localhost就是监听本机,作用：第二个repcached监听第一个repcached如果有问题就接管</p></li>
+<li><p>测试
+先链接 11211 这个端口的服务，设置name 的值是  asion
+<code>&gt; telnet localhost 11211</code>
+<code>&gt; set name 0 0 5</code></p></li>
+</ol>
 
-<h2>怎么应对网站高并发？</h2>
+<p><strong>注意：在telnet 使用 quit 回车退出</strong></p>
 
-<blockquote>
-<p>主要处理方式就是分流。</p>
+<p>然后使用 11212 这个端口的服务
+    <code>&gt; telnet localhost 11212</code>
+    <code>&gt; get name</code></p>
 
-<p>从架构上可以采用分层架构，增加服务器集群，并使用负载均衡来减轻web服务器的压力，数据库服务器采用读写分离，主从复制的方式，来减轻数据库服务器的压力。</p>
+<p>同样的测试可以反之在进行</p>
 
-<ul>
-<li><p>尽量减少http请求：合并图片，像外部js文件可以合并在一起、资源分布部署、防盗链等</p></li>
-<li><p>服务器端采用缓存技术（速度 ：内存缓存&gt;静态缓存&gt;查询数据库）</p></li>
-<li><p>合理设计数据库，使用高效sql语句，合理建立索引等。</p></li>
-</ul>
-</blockquote>
-
-<h2>大流量（访问网站的量）解决方案？</h2>
-
-<blockquote>
-<ul>
-<li>减少http请求（比如合并图片）</li>
-<li>配置缓存，让浏览器缓存更新不频繁资源--现在浏览器一般默认是缓存的，不用单独配置。</li>
-<li>配置压缩，服务器端压缩，客户端解压</li>
-<li>把比较占用流量的资源单独部署</li>
-<li>防盗链</li>
-<li>买带宽</li>
-</ul>
-</blockquote>
-
-<h2>大存储的解决方式？</h2>
-
-<blockquote>
-<ul>
-<li>缓存技术（页面静态化+内存缓存技术）</li>
-<li>数据库方面的优化</li>
-</ul>
-</blockquote>
-
-<h2>怎么配置MPM？？？</h2>
-
-<blockquote>
-<p>在httpd.conf里开启，MPM扩展  : Include conf/extra/httpd-mpm.conf在mpm的辅助配置文件（extra/httpd-mpm-conf）中进行配置大部分网站，中型网站推荐配置如下 ：</p>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mpm_prefork_module</span><span class="o">&gt;</span>
-<span class="lineno">2</span>       <span class="nx">StartServers</span><span class="o">?</span><span class="mi">5</span>          <span class="c1">#预先启动</span>
-<span class="lineno">3</span>       <span class="nx">MinSpareServers</span><span class="o">?</span><span class="mi">5</span>
-<span class="lineno">4</span>       <span class="nx">MaxSpareServers</span><span class="o">?</span><span class="mi">10</span>       <span class="c1">#最大空闲进程</span>
-<span class="lineno">5</span>       <span class="nx">ServerLimit</span><span class="o">?</span><span class="mi">1500</span>          <span class="c1">#用于修改apache编程参数</span>
-<span class="lineno">6</span>       <span class="nx">MaxClients</span><span class="o">?</span><span class="mi">1000</span>            <span class="c1">#最大并发数</span>
-<span class="lineno">7</span>       <span class="nx">MaxRequestsPerChild</span><span class="o">?</span><span class="mi">0</span>      <span class="c1">#一个进程对应的线程数，对worker更效果。如果是0， 则不让进程死掉。 </span>
-<span class="lineno">8</span>   <span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>pv值如果百万级别：ServerLimit  2500       MaxClients 2000</p>
-</blockquote>
-
-<h2>怎么配置压缩，以减少传输的数据量？？？</h2>
-
-<blockquote>
-<ul>
-<li>要开启gzip压缩的mod<em>deflate模块： LoadModule deflate</em>module modules/mod_deflate.so</li>
-<li>在虚拟主机里面针对具体的文件类型进行配置。例如：</li>
-</ul>
-</blockquote>
-
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno">1</span> <span class="o">&lt;</span><span class="nx">ifmodule</span> <span class="nx">mod_deflate</span><span class="o">.</span><span class="nx">c</span><span class="o">&gt;</span> 
-<span class="lineno">2</span>   <span class="nx">DeflateCompressionLevel</span> <span class="mi">6</span>       <span class="c1">#压缩级别为6，可1-9，推荐为6 </span>
-<span class="lineno">3</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">plain</span>  <span class="c1">#压缩文本文件 </span>
-<span class="lineno">4</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">html</span>  <span class="c1">#压缩html文件 </span>
-<span class="lineno">5</span>   <span class="nx">AddOutputFilterByType</span> <span class="nx">DEFLATE</span> <span class="nx">text</span><span class="o">/</span><span class="nx">xml</span>   <span class="c1">#压缩xml文件</span>
-<span class="lineno">6</span>   <span class="o">&lt;/</span><span class="nx">ifmodule</span><span class="o">&gt;</span></code></pre></div>
-
-<blockquote>
-<p>压缩是要耗费cup资源的，图片、视频等文件压缩效果不好，一般压缩文本型文件即可。</p>
-</blockquote>
+<p><strong>实验完成!</strong></p>
 
     </div>
     <hr>
