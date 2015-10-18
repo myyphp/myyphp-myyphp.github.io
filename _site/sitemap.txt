@@ -31,7 +31,9 @@
 
   /2015/06/15/linux-nginx.html
 
-  /2015/06/11/Lamp.html
+  /2015/06/15/linux-lamp.html
+
+  /2015/06/11/Lnmp.html
 
   /2015/06/02/mysql%20-%20optimize.html
 

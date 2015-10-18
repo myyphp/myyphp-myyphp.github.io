@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>Linux下 nginx安装 + php-fpm安装 | 圣泉山人—随记</title>
+<title>lamp环境的搭建 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -73,7 +73,7 @@
                 
                   <a href="/2015/06/15/linux-nginx.html" class="list-group-item-lay pjaxlink">linux 环境下 php 扩展安装通用方法</a>
                 
-                  <a href="/2015/06/11/Lamp.html" class="list-group-item-lay pjaxlink">Linux下 nginx安装 + php-fpm安装</a>
+                  <a href="/2015/06/11/Lnmp.html" class="list-group-item-lay pjaxlink">Linux下 nginx安装 + php-fpm安装</a>
                 
                   <a href="/2015/06/02/mysql%20-%20optimize.html" class="list-group-item-lay pjaxlink">Mysql优化小技巧</a>
                 
@@ -97,6 +97,8 @@
                   <a href="/2015/07/02/Linux-Problems.html" class="list-group-item-lay pjaxlink">Linux 0：实际问题</a>
                 
                   <a href="/2015/06/15/linux-redis.html" class="list-group-item-lay pjaxlink">Linux环境下redis的搭建</a>
+                
+                  <a href="/2015/06/15/linux-lamp.html" class="list-group-item-lay pjaxlink">lamp环境的搭建</a>
                 
                   <a href="/2015/05/20/linux-php.html" class="list-group-item-lay pjaxlink">linux 环境下 php 扩展安装通用方法</a>
                 
@@ -208,8 +210,24 @@
                         Linux 0：实际问题
                       </a>
                     
-                      <a  href='/2015/06/11/Lamp.html' class="list-group-item pjaxlink">
+                      <a  href='/2015/06/11/Lnmp.html' class="list-group-item pjaxlink">
                         Linux下 nginx安装 + php-fpm安装
+                      </a>
+                    
+                  </div>
+                </div>
+               
+                <div class="panel panel-info">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#Lamp">Lamp</a>
+                      <span class="badge pull-right">1</span>
+                    </h4>
+                  </div>
+                  <div id="Lamp" class="panel-collapse collapse">
+                    
+                      <a  href='/2015/06/15/linux-lamp.html' class="list-group-item pjaxlink">
+                        lamp环境的搭建
                       </a>
                     
                   </div>
@@ -276,185 +294,196 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">Linux下 nginx安装 + php-fpm安装</h2>
-    2015年06月11日
+    <h2 id="#identifier">lamp环境的搭建</h2>
+    2015年06月15日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <h1>Linux下 nginx安装 + php-fpm安装</h1>
+      <h1>lamp环境的搭建</h1>
 
+<p>lamp源码包：<a href="http://yunpan.cn/cHqsvIUPRgEgN">http://yunpan.cn/cHqsvIUPRgEgN</a>  访问密码 ca46 <br/>
+linux操作系统：<a href="http://yunpan.cn/cHqsNzJpiSfQf">http://yunpan.cn/cHqsNzJpiSfQf</a>  访问密码 9412 <br/>
+mysql源码：<a href="http://mirrors.sohu.com/mysql/">http://mirrors.sohu.com/mysql/</a><br/>
+httpd源码：<a href="http://mirrors.sohu.com/mysql/">http://apache.fayea.com/httpd/</a><br/>
+PHP源码：<a href="http://php.net/releases/">http://php.net/releases/</a><br/></p>
+
+<h2>系统环境查看</h2>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&gt; [root@asion ~]#   lsb_release  -a
+LSB-Version:core-4.0-ia32:core-4.0-noarch:graphics-4.0-ia32:gr  aphics-4.0-noarch:printing-4.0-ia32:printing-4.0-noarch
+Distributor ID:  CentOS
+Description:    CentOS release 5.5 (Final)
+Release:        5.5
+Codename:      Final
+</code></pre></div>
 <ol>
-<li><p>编译环境准备</p>
+<li><p>编译环境的准备 (在编译之前，先安装好相应的编译器和库文件等)</p>
 
 <blockquote>
-<p>yum -y install gcc automake autoconf libtool make  gcc  gcc-c++</p>
+<p>yum -y install make apr* autoconf automake curl-devel gcc gcc-c++ zlib-devel openssl openssl-devel pcre-devel gd kernel keyutils patch perl kernel-headers compat* mpfr cpp glibc libgomp libstdc++-devel ppl cloog-ppl keyutils-libs-devel libcom_err-devel libsepol-devel libselinux-devel krb5-devel zlib-devel libXpm* freetype libjpeg* libpng* php-common php-gd ncurses* libtool* libxml2 libxml2-devel patch cmake</p>
 </blockquote></li>
-<li><p>一般都需要先装pcre、 zlib，前者为了重写rewrite，后者为了gzip压缩
-源代码目录：/usr/local/src</p></li>
-<li><p>安装pcre 和 zlib 和 ssl</p>
+<li><p>ftp环境的搭建（使用  非root  用户后，在ftp客户端上传相关的源码）
+    &gt; yum install -y vsftpd
+    &gt; useradd asion
+    &gt; service vsftpd status</p></li>
+<li><p>下载相关的源码包(将源码cp到/usr/local/src/下，并进入)
+    &gt; cd /usr/local/src/
+    &gt; pwd</p></li>
+<li><p>解压相关源码文件
+    &gt; tar -zxvf xxx.tar.gz</p></li>
+<li><p>进入解压后的文件夹
+    &gt; cd xxx
+    &gt; ./configure --help
+    &gt; make
+    &gt; make install</p></li>
+<li><p>安装成功后，在网站目录创建index.php文件，写入phpinfo()测试
+    &gt; touch index.php
+    &gt; echo &#39;&lt;?php phpinfo();&gt;&#39;  &gt; index.php</p></li>
+<li><p>具体安装</p>
 
-<blockquote>
-<p>cd /usr/local/src
-wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.34.tar.gz 
-tar -zxvf pcre-8.34.tar.gz
-cd pcre-8.34
-./configure
-make
-make install</p>
+<p>a. libxml2 安装（xml和html文件相关依赖的库）
+    &gt; tar -zxvf libxml2-2.6.30
+    &gt; cd libxml2-2.6.30
+    &gt; ./configure --prefix=/usr/local/libxml2
+    &gt; make &amp;&amp; make install</p>
 
-<p>cd /usr/local/src
-wget http://zlib.net/zlib-1.2.8.tar.gz
-tar -zxvf zlib-1.2.8.tar.gz
-cd zlib-1.2.8
-./configure
-make
-make install</p>
+<p>b. libmcrypt-2.5.8 安装（加密库）
+    &gt; cd /lamp/libmcrypt-2.5.8
+    &gt; ./configure --prefix=/usr/local/libmcrypt/
+    &gt; make 
+    &gt; make install</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">== 进入libmcrypt-2.5.8文件夹内的 libltdl
+&gt; cd ./libmcrypt-2.5.8/libltdl
+&gt; ./configure --enable-ltdl-install
+&gt; make
+&gt; make install
+</code></pre></div>
+<p>c. zlib库安装（不需要指定安装路径）
+    &gt; ./configure
+    &gt; make
+    &gt; make install </p>
 
-<p>cd /usr/local/src
-wget http://www.openssl.org/source/openssl-1.0.1c.tar.gz
-tar -zxvf openssl-1.0.1c.tar.gz</p>
-</blockquote></li>
-<li><p>nginx 安装</p>
+<p>d. png图片库安装
+    &gt; ./configure --prefix=/usr/local/libpng/
+    &gt; make
+    &gt; make install</p>
 
-<blockquote>
-<p>cd /usr/local/src
-wget http://nginx.org/download/nginx-1.4.2.tar.gz
-tar -zxvf nginx-1.4.2.tar.gz
-cd nginx-1.4.2</p>
+<p>e. jpeg图片库安装（需要自己创建jpeg6）
+    &gt; mkdir /usr/local/jpeg6
+    &gt; mkdir /usr/local/jpeg6/bin
+    &gt; mkdir /usr/local/jpeg6/lib
+    &gt; mkdir /usr/local/jpeg6/include
+    &gt; mkdir -p /usr/local/jpeg6/man/man1
+    &gt; cd /lamp/jpeg-6b
+    &gt; ./configure --prefix=/usr/local/jpeg6/ --enable-shared --enable-static
+    &gt; make
+    &gt; make install</p>
 
-<p>./configure --sbin-path=/usr/local/nginx/nginx  \
---conf-path=/usr/local/nginx/nginx.conf  \
---pid-path=/usr/local/nginx/nginx.pid</p>
+<p>f. freetype字体库安装
+    &gt; ./configure --prefix=/usr/local/freetype/
+    &gt; make
+    &gt; make install</p>
 
-<p>make
-make install</p>
-</blockquote></li>
-<li><p>安装成功后，/usr/local/nginx 目录下如下
-fastcgi.conf            koi-win             nginx.conf.default
-fastcgi.conf.default    logs                scgi<em>params
-fastcgi</em>params          mime.types          scgi<em>params.default
-fastcgi</em>params.default  mime.types.default  uwsgi<em>params
-html                    nginx               uwsgi</em>params.default
-koi-utf                 nginx.conf          win-utf</p></li>
-<li><p>启动之前先确保 80 端口没有被占用，执行 /usr/local/nginx/nginx 启动</p>
+<p>g. autoconfig生成makefile安装（不需要指定安装路径）
+    &gt; ./configure
+    &gt; make 
+    &gt; make install</p>
 
-<blockquote>
-<p>netstat -an | grep 80</p>
-
-<p>lsof -i | grep 80</p>
-
-<p>netstat -tunpl | grep 80</p>
-
-<p>/usr/local/nginx/nginx</p>
-</blockquote></li>
-<li><p>fpm-php 安装(5.3.3之后默认自带 加上参数 --enable-fpm 开启)</p>
-
-<blockquote>
-<p>tar -zxvf php-5.3.28.tar.gz</p>
-
-<p>cd php-5.3.28</p>
-
-<p>./configure --prefix=/usr/local/php  --enable-fpm </p>
-</blockquote></li>
-<li><p>更改nginx的配置文件 nginx.conf ，增加，并增加php-fpm的配置文件</p>
-
-<p>location ~ .php$ {
-    root html;
-    fastcgi<em>pass 127.0.0.1:9000;
-    fastcgi</em>index index.php;
-    fastcgi<em>param SCRIPT</em>FILENAME $document<em>root$fastcgi</em>script<em>name;
-    include fastcgi</em>params;
-}</p>
-
-<blockquote>
-<p>cd /usr/local/phpfpm/etc</p>
-
-<p>cp php-fpm.conf.default php-fpm.conf</p>
-</blockquote></li>
-<li><p>将 fpm-php 加入系统服务 (/usr/local/src/php-5.3.28/ )，并启动</p>
-
-<blockquote>
-<p>cp ./sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm</p>
-
-<p>chmod +x /etc/init.d/php-fpm</p>
-
-<p>chkconfig --add php-fpm</p>
-
-<p>chkconfig php-fpm on</p>
-
-<p>service php-fpm start</p>
-</blockquote></li>
-<li><p>使用 phpinfo() 函数测试即可</p></li>
-</ol>
-
-<p>附：
-I. 在编译安装时候可能遇到的一些问题
-    a. 编译pcre错误
-    libtool: compile: unrecognized option <code>-DHAVE_CONFIG_H&#39;
-    libtool: compile: Try</code>libtool --help&#39; for more information.
-    make[1]: *** [pcrecpp.lo] Error 1
-    make[1]: Leaving directory `/usr/local/src/pcre-8.34&#39;
-    make: *** [all] Error 2</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">解决方案：
-
-&gt; yum install -y g++
-
-make 时候出错
+<p>h. GD 库的安装
+    &gt; ./configure --prefix=/usr/local/gd2/ --with-jpeg=/usr/local/jpeg6/ --with-freetype=/usr/local/freetype/ --enable-m4<em>pattern</em>allow 
+    &gt; make
+    &gt; make install</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">注意：当make的时候，出现以下错误 
+configure.ac:64: error: possibly undefined macro: AM_ICONV 
+If this token and others are legitimate, please use m4_pattern_allow. 
+See the Autoconf documentation. 
+make: *** [configure] Error 1 
 
 解决方案：
-&gt; yum -y install openssl openssl-devel
+解决办法 ，编译加m4_pattern_allow参数 
+即：./configure --enable-m4_pattern_allow 
+便能顺利编译安装
 </code></pre></div>
-<p>II. nginx编译选项</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">a. configure命令是用来检测你的安装平台的目标特征的。它定义了系统的各个方面，包括nginx的被允许使用的连接处理的方法，比如它会检测你是不是有CC或GCC，并不是需要CC或GCC，它是个shell脚本，执行结束时，它会创建一个Makefile文件
+<p>i. apache安装</p>
 
-b. make是用来编译的，它从Makefile中读取指令，然后编译
+<blockquote>
+<p>./configure --prefix=/usr/local/apache2  --sysconfdir=/etc/httpd/ --enable-rewrite --enable-so --enable-headers --enable-expires  --enable-modules=most --enable-deflate</p>
+</blockquote>
 
-c. make install是用来安装的，它也从Makefile中读取指令，安装到指定的位置
+<p>j. ncurses安装(Mysql安装前必须安装这个字符库)源码安装才需要)</p>
 
-nginx的configure命令支持以下参数：
+<p>k. 安装mysql通用二进制包
+    &gt;  groupadd mysql
+    &gt;  useradd -g mysql mysql</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&gt;  cd /usr/local/mysql-5.5.44-linux2.6-i686/
+&gt;  chown -R msyql.mysql  .
+&gt;  scripts/mysql_install_db --basedir=/usr/local/mysql  --user=mysql
+&gt;  chown -R root .
+&gt;  cp support-files/mysql.server /etc/init.d/mysqld
 
-    --prefix=PATH  定义一个安装目录，也就是nginx的安装目录。默认使用 /usr/local/nginx
+&gt;  chkconfig --add mysqld
+&gt;  chkconfig mysqld on
+&gt;  cp support-files/my-medium.cnf /etc/my.cnf
 
-    --sbin-path=PATH 设置nginx的可执行文件的路径，默认为  prefix/sbin/nginx
+&gt;  service mysqld start
+&gt;  ps aux | grep mysqld  
 
-    --conf-path=PATH  设置在nginx.conf配置文件的路径。nginx允许使用不同的配置文件启动，通过命令行中的-c选项。默认为prefix/conf/nginx.conf
+注意：/usr/local/mysql/bin/mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory
 
-    --pid-path=PATH  设置nginx.pid文件，将存储的主进程的进程号。安装完成后，可以随时改变的文件名 ， 在nginx.conf配置文件中使用 PID指令。默认情况下，文件名 为prefix/logs/nginx.pid
+解决方案：libaio.i386 0:0.3.106-5
+&gt; yum install libaio
 
-    --error-log-path=PATH 设置主错误，警告，和诊断文件的名称。安装完成后，可以随时改变的文件名 ，在nginx.conf配置文件中 使用 的error_log指令。默认情况下，文件名 为prefix/logs/error.log
+注意： selinux 必须关闭
+&gt; sestatus -v
+&gt; getenforce
 
-    --http-log-path=PATH 设置主请求的HTTP服务器的日志文件的名称。安装完成后，可以随时改变的文件名 ，在nginx.conf配置文件中 使用 的access_log指令。默认情况下，文件名 为prefix/logs/access.log
+&gt; 临时关闭
+&gt; setenforce 0
 
-    --user=name 设置nginx工作进程的用户，默认的用户名是nobody
+&gt; 修改配置文件需要重启机器：
+&gt; 修改/etc/selinux/config 文件
+&gt; 将SELINUX=enforcing改为SELINUX=disabled
+&gt; 重启机器即可 
 
-    --group=name  设置nginx工作进程的用户组。安装完成后，可以随时更改的名称在nginx.conf配置文件中 使用的 user指令。默认的为非特权用户。
+注意：
+[root@localhost mysql]# service mysql start
+Starting MySQL.. ERROR! The server quit without updating PID file (/var/lib/mysql/localhost.localdomain.pid).
 
-    --with-select_module --without-select_module 启用或禁用构建一个模块来允许服务器使用select()方法。该模块将自动建立，如果平台不支持的kqueue，epoll，rtsig或/dev/poll
-
-    --with-poll_module --without-poll_module 启用或禁用构建一个模块来允许服务器使用poll()方法。该模块将自动建立，如果平台不支持的kqueue，epoll，rtsig或/dev/poll
-
-    --without-http_gzip_module 不编译压缩的HTTP服务器的响应模块。编译并运行此模块需要zlib库
-
-    --without-http_rewrite_module 不编译重写模块。编译并运行此模块需要PCRE库支持
-
-    --without-http_proxy_module 不编译http_proxy模块
-
-    --with-http_ssl_module  使用https协议模块。默认情况下，该模块没有被构建。建立并运行此模块的OpenSSL库是必需的
-
-    --with-pcre=PATH 设置PCRE库的源码路径。PCRE库的源码（版本4.4 - 8.30）需要从PCRE网站下载并解压。其余的工作是Nginx的./ configure和make来完成。正则表达式使用在location指令和 ngx_http_rewrite_module 模块中
-
-    --with-pcre-jit 编译PCRE包含just-in-time compilation”（1.1.12中， pcre_jit指令）
-
-    --with-zlib=PATH 设置的zlib库的源码路径。要下载从 zlib（版本1.1.3 - 1.2.5）的并解压。其余的工作是Nginx的./ configure和make完成。ngx_http_gzip_module模块需要使用zlib 
-
-    --with-cc-opt=parameters
-     设置额外的参数将被添加到CFLAGS变量。例如,当你在FreeBSD上使用PCRE库时需要使用:--with-cc-opt=&quot;-I /usr/local/include。.如需要需要增加 select()支持的文件数量:--with-cc-opt=&quot;-D FD_SETSIZE=2048&quot;
-
-    --with-ld-opt=parameters 设置附加的参数，将用于在链接期间。例如，当在FreeBSD下使用该系统的PCRE库,应指定:--with-ld-opt=&quot;-L /usr/local/lib&quot;
+解决方案：
+    1. 注释/etc/my.cnf里的skip-federated注释掉即#skip-federated；
+    2. my.cnf文件配置过高，重新定义其中的参数（根据服务器情况定义）；
+    3. 杀掉mysql_safe和mysqld进程，然后再重启；
+    4. 当前日志文件过大，超出了my.cnf中定义的大小（默认为64M），删除日志文件再重启；
+    5. 其他情况，查看日志文件（本人是/usr/local/data/bogon.error，具体因人而异），然后具体分析；
 </code></pre></div>
-<p>Status API Training Shop Blog About Pricing
-© 2015 GitHub, Inc. Terms Privacy Security Contact Help</p>
+<p>l. 安装PHP
+      &gt; cd /usr/local/src/php-5.3.28
+      &gt; ./configure --prefix=/usr/local/php/ --with-config-file-path=/usr/local/php/etc/ --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql/ --with-libxml-dir=/usr/local/libxml2/ --with-jpeg-dir=/usr/local/jpeg6/ --with-freetype-dir=/usr/local/freetype/ --with-gd=/usr/local/gd2/ --with-mcrypt=/usr/local/libmcrypt/ --with-mysqli=/usr/local/mysql/bin/mysql_config --enable-soap --enable-mbstring=all --enable-sockets 
+      &gt;  make
+      &gt;  make install
+      &gt;  cp php.ini-dist /usr/local/php/etc/php.ini</p>
+
+<p>m. 打开Apache的配置文件（添加AddType这两行）</p>
+
+<blockquote>
+<p>cd /etc/httpd/
+vim httpd.conf
+AddType application/x-httpd-php .php
+AddType application/x-httpd-source .phps</p>
+</blockquote>
+
+<p>n. 更改php.ini里面的时区（设置为亚洲/上海）
+    &gt; cd /usr/local/php/etc/
+    &gt; vim php.ini
+    &gt; date.timezone = Asia/Shanghai</p>
+
+<p>o. 在网站根目录建立测试文件
+    &gt; cd /var/www/html
+    &gt; vim index.php
+    &gt; phpinfo()</p>
+
+<p>p. 在浏览器地址栏输入 http://localhost/index.php</p></li>
+</ol>
 
     </div>
     <hr>

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>Git常用命令速查表 | 圣泉山人—随记</title>
+<title>Linux下 nginx安装 + php-fpm安装 | 圣泉山人—随记</title>
 <meta name="author" content="圣泉山人">
 
 
@@ -294,74 +294,185 @@
             <div class="row">
   <div class="col-md-13 aside3-title">
     <br>
-    <h2 id="#identifier">Git常用命令速查表</h2>
-    2015年03月10日
+    <h2 id="#identifier">Linux下 nginx安装 + php-fpm安装</h2>
+    2015年06月11日
   </div>
   <div class="col-md-13 aside3-content">
     <hr>
     <div id="content">
-      <p>master: 默认开发分支</p>
-
-<p>origin: 默认远程版本库</p>
-
-<p>Head: 默认开发分支</p>
-
-<p>Head^: Head的父提交</p>
-
-<h3>创建版本库</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git clone &lt;url&gt;   #克隆远程版本库
-$ git init          #初始化本地版本库
-</code></pre></div>
-<h3>修改和提交</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git status        #查看状态
-$ git diff          #查看变更内容
-$ git add .         #跟踪所有改动过的文件
-$ git add &lt;file&gt;    #跟踪指定的文件
-$ git mv &lt;old&gt;&lt;new&gt; #文件改名
-$ git rm&lt;file&gt;      #删除文件
-$ git rm --cached&lt;file&gt;            #停止跟踪文件但不删除
-$ git commit -m &quot;commit messages&quot;  #提交所有更新过的文件
-$ git commit --amend               #修改最后一次改动
-</code></pre></div>
-<h3>查看提交历史</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git log                    #查看提交历史
-$ git log -p &lt;file&gt;          #查看指定文件的提交历史
-$ git blame &lt;file&gt;           #以列表方式查看指定文件的提交历史
-</code></pre></div>
-<h3>撤销</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git reset --hard HEAD      #撤销工作目录中所有未提交文件的修改内容
-$ git checkout HEAD &lt;file&gt;   #撤销指定的未提交文件的修改内容
-$ git revert &lt;commit&gt;        #撤销指定的提交
-$ git log --before=&quot;1 days&quot;  #退回到之前1天的版本 
-</code></pre></div>
-<h3>分支与标签</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git branch                   #显示所有本地分支
-$ git checkout &lt;branch/tag&gt;    #切换到指定分支和标签
-$ git branch &lt;new-branch&gt;      #创建新分支
-$ git branch -d &lt;branch&gt;       #删除本地分支
-$ git tag                      #列出所有本地标签
-$ git tag &lt;tagname&gt;            #基于最新提交创建标签
-$ git tag -d &lt;tagname&gt;         #删除标签
-</code></pre></div>
-<h3>合并与衍合</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git merge &lt;branch&gt;        #合并指定分支到当前分支
-$ git rebase &lt;branch&gt;       #衍合指定分支到当前分支
-</code></pre></div>
-<h3>远程操作</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$ git remote -v                   #查看远程版本库信息
-$ git remote show &lt;remote&gt;        #查看指定远程版本库信息
-$ git remote add &lt;remote&gt; &lt;url&gt;   #添加远程版本库
-$ git fetch &lt;remote&gt;              #从远程库获取代码
-$ git pull &lt;remote&gt; &lt;branch&gt;      #下载代码及快速合并
-$ git push &lt;remote&gt; &lt;branch&gt;      #上传代码及快速合并
-$ git push &lt;remote&gt; :&lt;branch/tag-name&gt;  #删除远程分支或标签
-$ git push --tags                       #上传所有标签
-</code></pre></div>
-<h3>资料链接</h3>
+      <h1>Linux下 nginx安装 + php-fpm安装</h1>
 
 <ol>
-<li><a href="https://try.github.io/levels/1/challenges/1">Try Git</a></li>
+<li><p>编译环境准备</p>
+
+<blockquote>
+<p>yum -y install gcc automake autoconf libtool make  gcc  gcc-c++</p>
+</blockquote></li>
+<li><p>一般都需要先装pcre、 zlib，前者为了重写rewrite，后者为了gzip压缩
+源代码目录：/usr/local/src</p></li>
+<li><p>安装pcre 和 zlib 和 ssl</p>
+
+<blockquote>
+<p>cd /usr/local/src
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.34.tar.gz 
+tar -zxvf pcre-8.34.tar.gz
+cd pcre-8.34
+./configure
+make
+make install</p>
+
+<p>cd /usr/local/src
+wget http://zlib.net/zlib-1.2.8.tar.gz
+tar -zxvf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure
+make
+make install</p>
+
+<p>cd /usr/local/src
+wget http://www.openssl.org/source/openssl-1.0.1c.tar.gz
+tar -zxvf openssl-1.0.1c.tar.gz</p>
+</blockquote></li>
+<li><p>nginx 安装</p>
+
+<blockquote>
+<p>cd /usr/local/src
+wget http://nginx.org/download/nginx-1.4.2.tar.gz
+tar -zxvf nginx-1.4.2.tar.gz
+cd nginx-1.4.2</p>
+
+<p>./configure --sbin-path=/usr/local/nginx/nginx  \
+--conf-path=/usr/local/nginx/nginx.conf  \
+--pid-path=/usr/local/nginx/nginx.pid</p>
+
+<p>make
+make install</p>
+</blockquote></li>
+<li><p>安装成功后，/usr/local/nginx 目录下如下
+fastcgi.conf            koi-win             nginx.conf.default
+fastcgi.conf.default    logs                scgi<em>params
+fastcgi</em>params          mime.types          scgi<em>params.default
+fastcgi</em>params.default  mime.types.default  uwsgi<em>params
+html                    nginx               uwsgi</em>params.default
+koi-utf                 nginx.conf          win-utf</p></li>
+<li><p>启动之前先确保 80 端口没有被占用，执行 /usr/local/nginx/nginx 启动</p>
+
+<blockquote>
+<p>netstat -an | grep 80</p>
+
+<p>lsof -i | grep 80</p>
+
+<p>netstat -tunpl | grep 80</p>
+
+<p>/usr/local/nginx/nginx</p>
+</blockquote></li>
+<li><p>fpm-php 安装(5.3.3之后默认自带 加上参数 --enable-fpm 开启)</p>
+
+<blockquote>
+<p>tar -zxvf php-5.3.28.tar.gz</p>
+
+<p>cd php-5.3.28</p>
+
+<p>./configure --prefix=/usr/local/php  --enable-fpm </p>
+</blockquote></li>
+<li><p>更改nginx的配置文件 nginx.conf ，增加，并增加php-fpm的配置文件</p>
+
+<p>location ~ .php$ {
+    root html;
+    fastcgi<em>pass 127.0.0.1:9000;
+    fastcgi</em>index index.php;
+    fastcgi<em>param SCRIPT</em>FILENAME $document<em>root$fastcgi</em>script<em>name;
+    include fastcgi</em>params;
+}</p>
+
+<blockquote>
+<p>cd /usr/local/phpfpm/etc</p>
+
+<p>cp php-fpm.conf.default php-fpm.conf</p>
+</blockquote></li>
+<li><p>将 fpm-php 加入系统服务 (/usr/local/src/php-5.3.28/ )，并启动</p>
+
+<blockquote>
+<p>cp ./sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm</p>
+
+<p>chmod +x /etc/init.d/php-fpm</p>
+
+<p>chkconfig --add php-fpm</p>
+
+<p>chkconfig php-fpm on</p>
+
+<p>service php-fpm start</p>
+</blockquote></li>
+<li><p>使用 phpinfo() 函数测试即可</p></li>
 </ol>
+
+<p>附：
+I. 在编译安装时候可能遇到的一些问题
+    a. 编译pcre错误
+    libtool: compile: unrecognized option <code>-DHAVE_CONFIG_H&#39;
+    libtool: compile: Try</code>libtool --help&#39; for more information.
+    make[1]: *** [pcrecpp.lo] Error 1
+    make[1]: Leaving directory `/usr/local/src/pcre-8.34&#39;
+    make: *** [all] Error 2</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">解决方案：
+
+&gt; yum install -y g++
+
+make 时候出错
+
+解决方案：
+&gt; yum -y install openssl openssl-devel
+</code></pre></div>
+<p>II. nginx编译选项</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">a. configure命令是用来检测你的安装平台的目标特征的。它定义了系统的各个方面，包括nginx的被允许使用的连接处理的方法，比如它会检测你是不是有CC或GCC，并不是需要CC或GCC，它是个shell脚本，执行结束时，它会创建一个Makefile文件
+
+b. make是用来编译的，它从Makefile中读取指令，然后编译
+
+c. make install是用来安装的，它也从Makefile中读取指令，安装到指定的位置
+
+nginx的configure命令支持以下参数：
+
+    --prefix=PATH  定义一个安装目录，也就是nginx的安装目录。默认使用 /usr/local/nginx
+
+    --sbin-path=PATH 设置nginx的可执行文件的路径，默认为  prefix/sbin/nginx
+
+    --conf-path=PATH  设置在nginx.conf配置文件的路径。nginx允许使用不同的配置文件启动，通过命令行中的-c选项。默认为prefix/conf/nginx.conf
+
+    --pid-path=PATH  设置nginx.pid文件，将存储的主进程的进程号。安装完成后，可以随时改变的文件名 ， 在nginx.conf配置文件中使用 PID指令。默认情况下，文件名 为prefix/logs/nginx.pid
+
+    --error-log-path=PATH 设置主错误，警告，和诊断文件的名称。安装完成后，可以随时改变的文件名 ，在nginx.conf配置文件中 使用 的error_log指令。默认情况下，文件名 为prefix/logs/error.log
+
+    --http-log-path=PATH 设置主请求的HTTP服务器的日志文件的名称。安装完成后，可以随时改变的文件名 ，在nginx.conf配置文件中 使用 的access_log指令。默认情况下，文件名 为prefix/logs/access.log
+
+    --user=name 设置nginx工作进程的用户，默认的用户名是nobody
+
+    --group=name  设置nginx工作进程的用户组。安装完成后，可以随时更改的名称在nginx.conf配置文件中 使用的 user指令。默认的为非特权用户。
+
+    --with-select_module --without-select_module 启用或禁用构建一个模块来允许服务器使用select()方法。该模块将自动建立，如果平台不支持的kqueue，epoll，rtsig或/dev/poll
+
+    --with-poll_module --without-poll_module 启用或禁用构建一个模块来允许服务器使用poll()方法。该模块将自动建立，如果平台不支持的kqueue，epoll，rtsig或/dev/poll
+
+    --without-http_gzip_module 不编译压缩的HTTP服务器的响应模块。编译并运行此模块需要zlib库
+
+    --without-http_rewrite_module 不编译重写模块。编译并运行此模块需要PCRE库支持
+
+    --without-http_proxy_module 不编译http_proxy模块
+
+    --with-http_ssl_module  使用https协议模块。默认情况下，该模块没有被构建。建立并运行此模块的OpenSSL库是必需的
+
+    --with-pcre=PATH 设置PCRE库的源码路径。PCRE库的源码（版本4.4 - 8.30）需要从PCRE网站下载并解压。其余的工作是Nginx的./ configure和make来完成。正则表达式使用在location指令和 ngx_http_rewrite_module 模块中
+
+    --with-pcre-jit 编译PCRE包含just-in-time compilation”（1.1.12中， pcre_jit指令）
+
+    --with-zlib=PATH 设置的zlib库的源码路径。要下载从 zlib（版本1.1.3 - 1.2.5）的并解压。其余的工作是Nginx的./ configure和make完成。ngx_http_gzip_module模块需要使用zlib 
+
+    --with-cc-opt=parameters
+     设置额外的参数将被添加到CFLAGS变量。例如,当你在FreeBSD上使用PCRE库时需要使用:--with-cc-opt=&quot;-I /usr/local/include。.如需要需要增加 select()支持的文件数量:--with-cc-opt=&quot;-D FD_SETSIZE=2048&quot;
+
+    --with-ld-opt=parameters 设置附加的参数，将用于在链接期间。例如，当在FreeBSD下使用该系统的PCRE库,应指定:--with-ld-opt=&quot;-L /usr/local/lib&quot;
+</code></pre></div>
+<p>Status API Training Shop Blog About Pricing
+© 2015 GitHub, Inc. Terms Privacy Security Contact Help</p>
 
     </div>
     <hr>

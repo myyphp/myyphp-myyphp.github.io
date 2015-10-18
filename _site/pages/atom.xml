@@ -815,9 +815,201 @@ vim redis.php&lt;/p&gt;
       </item>
     
       <item>
+        <title>lamp环境的搭建</title>
+        <link>/2015/06/15/linux-lamp.html</link>
+        <guid isPermaLink="true">/2015/06/15/linux-lamp.html</guid>
+        <pubDate>Mon, 15 Jun 2015 00:00:00 +0800</pubDate>
+        <description>&lt;h1&gt;lamp环境的搭建&lt;/h1&gt;
+
+&lt;p&gt;lamp源码包：&lt;a href=&quot;http://yunpan.cn/cHqsvIUPRgEgN&quot;&gt;http://yunpan.cn/cHqsvIUPRgEgN&lt;/a&gt;  访问密码 ca46 &lt;br/&gt;
+linux操作系统：&lt;a href=&quot;http://yunpan.cn/cHqsNzJpiSfQf&quot;&gt;http://yunpan.cn/cHqsNzJpiSfQf&lt;/a&gt;  访问密码 9412 &lt;br/&gt;
+mysql源码：&lt;a href=&quot;http://mirrors.sohu.com/mysql/&quot;&gt;http://mirrors.sohu.com/mysql/&lt;/a&gt;&lt;br/&gt;
+httpd源码：&lt;a href=&quot;http://mirrors.sohu.com/mysql/&quot;&gt;http://apache.fayea.com/httpd/&lt;/a&gt;&lt;br/&gt;
+PHP源码：&lt;a href=&quot;http://php.net/releases/&quot;&gt;http://php.net/releases/&lt;/a&gt;&lt;br/&gt;&lt;/p&gt;
+
+&lt;h2&gt;系统环境查看&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;gt; [root@asion ~]#   lsb_release  -a
+LSB-Version:core-4.0-ia32:core-4.0-noarch:graphics-4.0-ia32:gr  aphics-4.0-noarch:printing-4.0-ia32:printing-4.0-noarch
+Distributor ID:  CentOS
+Description:    CentOS release 5.5 (Final)
+Release:        5.5
+Codename:      Final
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;编译环境的准备 (在编译之前，先安装好相应的编译器和库文件等)&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;yum -y install make apr* autoconf automake curl-devel gcc gcc-c++ zlib-devel openssl openssl-devel pcre-devel gd kernel keyutils patch perl kernel-headers compat* mpfr cpp glibc libgomp libstdc++-devel ppl cloog-ppl keyutils-libs-devel libcom_err-devel libsepol-devel libselinux-devel krb5-devel zlib-devel libXpm* freetype libjpeg* libpng* php-common php-gd ncurses* libtool* libxml2 libxml2-devel patch cmake&lt;/p&gt;
+&lt;/blockquote&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;ftp环境的搭建（使用  非root  用户后，在ftp客户端上传相关的源码）
+    &amp;gt; yum install -y vsftpd
+    &amp;gt; useradd asion
+    &amp;gt; service vsftpd status&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;下载相关的源码包(将源码cp到/usr/local/src/下，并进入)
+    &amp;gt; cd /usr/local/src/
+    &amp;gt; pwd&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;解压相关源码文件
+    &amp;gt; tar -zxvf xxx.tar.gz&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;进入解压后的文件夹
+    &amp;gt; cd xxx
+    &amp;gt; ./configure --help
+    &amp;gt; make
+    &amp;gt; make install&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;安装成功后，在网站目录创建index.php文件，写入phpinfo()测试
+    &amp;gt; touch index.php
+    &amp;gt; echo &amp;#39;&amp;lt;?php phpinfo();&amp;gt;&amp;#39;  &amp;gt; index.php&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;具体安装&lt;/p&gt;
+
+&lt;p&gt;a. libxml2 安装（xml和html文件相关依赖的库）
+    &amp;gt; tar -zxvf libxml2-2.6.30
+    &amp;gt; cd libxml2-2.6.30
+    &amp;gt; ./configure --prefix=/usr/local/libxml2
+    &amp;gt; make &amp;amp;&amp;amp; make install&lt;/p&gt;
+
+&lt;p&gt;b. libmcrypt-2.5.8 安装（加密库）
+    &amp;gt; cd /lamp/libmcrypt-2.5.8
+    &amp;gt; ./configure --prefix=/usr/local/libmcrypt/
+    &amp;gt; make 
+    &amp;gt; make install&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;== 进入libmcrypt-2.5.8文件夹内的 libltdl
+&amp;gt; cd ./libmcrypt-2.5.8/libltdl
+&amp;gt; ./configure --enable-ltdl-install
+&amp;gt; make
+&amp;gt; make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;c. zlib库安装（不需要指定安装路径）
+    &amp;gt; ./configure
+    &amp;gt; make
+    &amp;gt; make install &lt;/p&gt;
+
+&lt;p&gt;d. png图片库安装
+    &amp;gt; ./configure --prefix=/usr/local/libpng/
+    &amp;gt; make
+    &amp;gt; make install&lt;/p&gt;
+
+&lt;p&gt;e. jpeg图片库安装（需要自己创建jpeg6）
+    &amp;gt; mkdir /usr/local/jpeg6
+    &amp;gt; mkdir /usr/local/jpeg6/bin
+    &amp;gt; mkdir /usr/local/jpeg6/lib
+    &amp;gt; mkdir /usr/local/jpeg6/include
+    &amp;gt; mkdir -p /usr/local/jpeg6/man/man1
+    &amp;gt; cd /lamp/jpeg-6b
+    &amp;gt; ./configure --prefix=/usr/local/jpeg6/ --enable-shared --enable-static
+    &amp;gt; make
+    &amp;gt; make install&lt;/p&gt;
+
+&lt;p&gt;f. freetype字体库安装
+    &amp;gt; ./configure --prefix=/usr/local/freetype/
+    &amp;gt; make
+    &amp;gt; make install&lt;/p&gt;
+
+&lt;p&gt;g. autoconfig生成makefile安装（不需要指定安装路径）
+    &amp;gt; ./configure
+    &amp;gt; make 
+    &amp;gt; make install&lt;/p&gt;
+
+&lt;p&gt;h. GD 库的安装
+    &amp;gt; ./configure --prefix=/usr/local/gd2/ --with-jpeg=/usr/local/jpeg6/ --with-freetype=/usr/local/freetype/ --enable-m4&lt;em&gt;pattern&lt;/em&gt;allow 
+    &amp;gt; make
+    &amp;gt; make install&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;注意：当make的时候，出现以下错误 
+configure.ac:64: error: possibly undefined macro: AM_ICONV 
+If this token and others are legitimate, please use m4_pattern_allow. 
+See the Autoconf documentation. 
+make: *** [configure] Error 1 
+
+解决方案：
+解决办法 ，编译加m4_pattern_allow参数 
+即：./configure --enable-m4_pattern_allow 
+便能顺利编译安装
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;i. apache安装&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;./configure --prefix=/usr/local/apache2  --sysconfdir=/etc/httpd/ --enable-rewrite --enable-so --enable-headers --enable-expires  --enable-modules=most --enable-deflate&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;j. ncurses安装(Mysql安装前必须安装这个字符库)源码安装才需要)&lt;/p&gt;
+
+&lt;p&gt;k. 安装mysql通用二进制包
+    &amp;gt;  groupadd mysql
+    &amp;gt;  useradd -g mysql mysql&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;gt;  cd /usr/local/mysql-5.5.44-linux2.6-i686/
+&amp;gt;  chown -R msyql.mysql  .
+&amp;gt;  scripts/mysql_install_db --basedir=/usr/local/mysql  --user=mysql
+&amp;gt;  chown -R root .
+&amp;gt;  cp support-files/mysql.server /etc/init.d/mysqld
+
+&amp;gt;  chkconfig --add mysqld
+&amp;gt;  chkconfig mysqld on
+&amp;gt;  cp support-files/my-medium.cnf /etc/my.cnf
+
+&amp;gt;  service mysqld start
+&amp;gt;  ps aux | grep mysqld  
+
+注意：/usr/local/mysql/bin/mysqld: error while loading shared libraries: libaio.so.1: cannot open shared object file: No such file or directory
+
+解决方案：libaio.i386 0:0.3.106-5
+&amp;gt; yum install libaio
+
+注意： selinux 必须关闭
+&amp;gt; sestatus -v
+&amp;gt; getenforce
+
+&amp;gt; 临时关闭
+&amp;gt; setenforce 0
+
+&amp;gt; 修改配置文件需要重启机器：
+&amp;gt; 修改/etc/selinux/config 文件
+&amp;gt; 将SELINUX=enforcing改为SELINUX=disabled
+&amp;gt; 重启机器即可 
+
+注意：
+[root@localhost mysql]# service mysql start
+Starting MySQL.. ERROR! The server quit without updating PID file (/var/lib/mysql/localhost.localdomain.pid).
+
+解决方案：
+    1. 注释/etc/my.cnf里的skip-federated注释掉即#skip-federated；
+    2. my.cnf文件配置过高，重新定义其中的参数（根据服务器情况定义）；
+    3. 杀掉mysql_safe和mysqld进程，然后再重启；
+    4. 当前日志文件过大，超出了my.cnf中定义的大小（默认为64M），删除日志文件再重启；
+    5. 其他情况，查看日志文件（本人是/usr/local/data/bogon.error，具体因人而异），然后具体分析；
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;l. 安装PHP
+      &amp;gt; cd /usr/local/src/php-5.3.28
+      &amp;gt; ./configure --prefix=/usr/local/php/ --with-config-file-path=/usr/local/php/etc/ --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql=/usr/local/mysql/ --with-libxml-dir=/usr/local/libxml2/ --with-jpeg-dir=/usr/local/jpeg6/ --with-freetype-dir=/usr/local/freetype/ --with-gd=/usr/local/gd2/ --with-mcrypt=/usr/local/libmcrypt/ --with-mysqli=/usr/local/mysql/bin/mysql_config --enable-soap --enable-mbstring=all --enable-sockets 
+      &amp;gt;  make
+      &amp;gt;  make install
+      &amp;gt;  cp php.ini-dist /usr/local/php/etc/php.ini&lt;/p&gt;
+
+&lt;p&gt;m. 打开Apache的配置文件（添加AddType这两行）&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;cd /etc/httpd/
+vim httpd.conf
+AddType application/x-httpd-php .php
+AddType application/x-httpd-source .phps&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;n. 更改php.ini里面的时区（设置为亚洲/上海）
+    &amp;gt; cd /usr/local/php/etc/
+    &amp;gt; vim php.ini
+    &amp;gt; date.timezone = Asia/Shanghai&lt;/p&gt;
+
+&lt;p&gt;o. 在网站根目录建立测试文件
+    &amp;gt; cd /var/www/html
+    &amp;gt; vim index.php
+    &amp;gt; phpinfo()&lt;/p&gt;
+
+&lt;p&gt;p. 在浏览器地址栏输入 http://localhost/index.php&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      </item>
+    
+      <item>
         <title>Linux下 nginx安装 + php-fpm安装</title>
-        <link>/2015/06/11/Lamp.html</link>
-        <guid isPermaLink="true">/2015/06/11/Lamp.html</guid>
+        <link>/2015/06/11/Lnmp.html</link>
+        <guid isPermaLink="true">/2015/06/11/Lnmp.html</guid>
         <pubDate>Thu, 11 Jun 2015 00:00:00 +0800</pubDate>
         <description>&lt;h1&gt;Linux下 nginx安装 + php-fpm安装&lt;/h1&gt;
 
